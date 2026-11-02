@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "kind": "project",
+  "repository": {"root": "/path/to/prepared/conflict-task-board", "commit": null},
+  "source": {"include": ["resolve-conflict.mjs", "tests/", "AGENTS.md", "README.md", "TASK.md"]},
+  "task": {"id": "PROJECT-07", "prompt": "Replaced by scripts/prepare-coding-comparison.mjs with docs/tasks/PROJECT-07.md, verified exactly at startup."},
+  "verification": {
+    "mode": "project",
+    "subset": true,
+    "note": "Self-contained conflict/draft contract. Initial failures are intentional; fixed implementations must pass unmodified tests. Human and resource measurements remain separate.",
+    "own_tests": ["tests/contract.test.mjs"],
+    "trusted": {"tests": ["tests/contract.test.mjs"], "plan_hash": null}
+  },
+  "limits": {"max_files": 32, "max_file_bytes": 128000, "max_total_bytes": 524288}
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "model_ids": ["muse-spark-1.3"],
+  "task_ids": ["save-conflicts", "booking-rules"],
+  "trajectory_ids": ["steady", "change-during-work", "fallback-return"],
+  "repetitions": 2,
+  "seed": "evidence-example-20261101",
+  "guidance_variant": "op-fixture",
+  "limits": {
+    "per_arm_generations": 8,
+    "max_total_generations": 192,
+    "batch_timeout_ms": 600000
+  }
+}

@@ -1,0 +1,32 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {bindCumulativeCipherExperiment} from '../web/cipher-cumulative-experiment.mjs';
+import {createTextboxLatestBuffer} from '../web/textbox-presence-client.mjs';
+const require=createRequire(new URL('../integrations/cipher-textbox/package.json',import.meta.url));
+const {KeystrokeManager}=require('@area2-ai/a2-cipher-core');
+const settle=()=>new Promise(resolve=>setImmediate(resolve));
+function element(){const handlers=new Map();return {addEventListener(k,f){if(!handlers.has(k))handlers.set(k,new Set());handlers.get(k).add(f);},removeEventListener(k,f){handlers.get(k)?.delete(f);},emit(type,key,extra={}){const e={isTrusted:true,key,code:'Key'+key.toUpperCase(),metaKey:false,ctrlKey:false,shiftKey:false,altKey:false,...extra};for(const f of [...(handlers.get(type)??[])])f(e);}};}
+function adapter(){const m=new KeystrokeManager();return {handleProcessKeydown:k=>m.processKeydown(k),handleProcessKeyup:k=>m.processKeyup(k),handleEndTypingSession(){const out=m.endTypingSession();m.resetTypingData();return out;}};}
+function fixture({holdFirst=false}={}){const el=element(),samples=[],statuses=[],sent=[],quarantines=Array.from({length:3},()=>new Set()),captures=Array.from({length:3},adapter),timers=new Map();let binding,now=0,id=0,seq=0,enabled=true,release;
+ const buffer=createTextboxLatestBuffer({now:()=>now,setTimer:(fn,delay)=>{timers.set(++id,{fn,at:now+delay});return id;},clearTimer:id=>timers.delete(id),dispatch:(p)=>{sent.push(p.length);return holdFirst&&sent.length===1?new Promise(r=>release=()=>r({status:'ready'})):Promise.resolve({status:'ready'});}});
+ const mount=()=>{binding=bindCumulativeCipherExperiment({element:el,captures,quarantines,onSnapshot:(payload,meta)=>{samples.push({payload,meta});if(meta.has_new_input!==false)buffer.offer(payload,{completedAt:now,token:buffer.token(),sequence:++seq});if(meta.kind==='final'&&enabled){binding.close();mount();}},onStatus:(value,meta)=>{statuses.push({value,meta});if((value==='window_empty'||value==='incomplete_window')&&enabled){queueMicrotask(()=>{if(enabled){binding.close();mount();}});}}});binding.setEnabled(true);};mount();
+ const tap=k=>{el.emit('keydown',k);el.emit('keyup',k);};const advance=async n=>{now+=n;for(const [id,timer] of [...timers])if(timer.at<=now){timers.delete(id);timer.fn();}await settle();};return{el,tap,samples,statuses,sent,buffer,advance,release:()=>release(),get binding(){return binding;},close:()=>{enabled=false;binding.close();buffer.close();}};}
+const shortcut=f=>{f.el.emit('keydown','x');f.el.emit('keydown','Meta',{code:'MetaLeft',metaKey:true});};
+const releases=f=>{f.el.emit('keyup','x',{metaKey:true});f.el.emit('keyup','Meta',{code:'MetaLeft'});};
+
+test('shortcut preserves completed pairs and subsequent capture resumes',async t=>{const f=fixture();t.after(f.close);f.tap('a');f.tap('b');shortcut(f);await settle();assert.deepEqual(f.sent,[2]);assert.equal(f.samples[0].meta.kind,'final');assert.ok(f.statuses.some(x=>x.value==='window_completed'&&x.meta.end_reason==='discontinuity'));assert.ok(!f.statuses.some(x=>x.value==='experiment_unavailable'));releases(f);f.tap('c');f.tap('d');assert.equal(f.binding.checkpoint().status,'finished');await settle();assert.equal(f.samples[1].payload.length,2);});
+
+test('held-key Send preserves completed pairs and excludes the unreleased key',async t=>{const f=fixture();t.after(f.close);f.tap('a');f.tap('b');f.el.emit('keydown','x');await f.binding.finish();await settle();assert.deepEqual(f.sent,[2]);f.el.emit('keyup','x');f.tap('c');f.tap('d');assert.equal(f.binding.checkpoint().status,'finished');assert.equal(f.samples[1].payload.length,2);});
+
+test('in-flight interim is not replayed; newer final waits for cooldown',async t=>{const f=fixture({holdFirst:true});t.after(f.close);f.tap('a');f.tap('b');assert.equal(f.binding.checkpoint().status,'finished');await settle();assert.deepEqual(f.sent,[2]);f.tap('c');shortcut(f);await settle();assert.deepEqual(f.sent,[2]);assert.equal(f.samples[1].payload.length,3);assert.equal(f.samples[1].meta.has_new_input,true);f.release();await settle();await f.advance(29999);assert.deepEqual(f.sent,[2]);await f.advance(1);assert.deepEqual(f.sent,[2,3]);});
+
+test('an unchanged interrupted final is not sent or queued again',async t=>{const f=fixture({holdFirst:true});t.after(f.close);f.tap('a');f.tap('b');assert.equal(f.binding.checkpoint().status,'finished');await settle();shortcut(f);await settle();assert.equal(f.samples[1].meta.has_new_input,false);f.release();await settle();await f.advance(60000);assert.deepEqual(f.sent,[2]);assert.equal(f.buffer.status().pending,false);});
+
+test('held-key-only interruption emits no sample and re-arms',async t=>{const f=fixture();t.after(f.close);shortcut(f);await settle();assert.equal(f.samples.length,0);assert.equal(f.sent.length,0);releases(f);f.tap('a');f.tap('b');assert.equal(f.binding.checkpoint().status,'finished');assert.equal(f.samples[0].payload.length,2);});
+
+test('Stop suppresses final publishing and cannot rearm capture',async t=>{const f=fixture();t.after(f.close);f.tap('a');f.el.emit('keydown','x');f.binding.discardWindow('stop');await settle();assert.equal(f.samples.length,0);assert.equal(f.binding.checkpoint().status,'unavailable');});
+
+test('an SDK exception still fails closed and cannot publish a sample',async t=>{const el=element(),statuses=[],samples=[],broken=adapter();broken.handleProcessKeydown=()=>{throw Error('synthetic');};const b=bindCumulativeCipherExperiment({element:el,captures:[adapter(),broken],onSnapshot:p=>samples.push(p),onStatus:v=>statuses.push(v)});t.after(()=>b.close());b.setEnabled(true);el.emit('keydown','a');await settle();assert.ok(statuses.includes('experiment_unavailable'));assert.equal(b.checkpoint().status,'unavailable');assert.deepEqual(samples,[]);});
+
+test('SDK finalization failure cannot emit a partial sample or rearm',async t=>{const el=element(),statuses=[],broken=adapter();broken.handleEndTypingSession=()=>{throw Error('synthetic');};const b=bindCumulativeCipherExperiment({element:el,captures:[adapter(),broken],onSnapshot:()=>assert.fail('unsafe sample'),onStatus:v=>statuses.push(v)});t.after(()=>b.close());b.setEnabled(true);el.emit('keydown','a');el.emit('keyup','a');el.emit('keydown','x');el.emit('keydown','Meta',{code:'MetaLeft',metaKey:true});await settle();assert.ok(statuses.includes('experiment_unavailable'));assert.equal(b.checkpoint().status,'unavailable');});

@@ -1,0 +1,5 @@
+# Facilitator only — Preserve a user edit during a save conflict
+
+Video choice: visually show a stale write, a preserved local edit, then a single retry. Natural decisions: same-field conflict resolution, retry limit, and how to present unresolved conflicts. Follow-up: “If a collaborator changed the same field, should we retry silently or show a choice? Explain before changing the contract.” This is a discussion prompt, not part of the fixed verifier.
+
+Use the same project snapshot and initial brief for each arm. Do not include this file, `checks/`, or `reference/` in agent workspaces. These are synthetic fixtures; use fresh independent copies for each arm and participant. Run acceptance checks against the candidate with `TASK_PROJECT_DIR=/absolute/path/to/candidate node --test tasks/save-conflicts/checks/acceptance.test.mjs`. A passing check covers only the public fixed contract in `project/CONTRACT.md`. Optional contract-changing follow-ups are separate and unscored unless new checks are supplied.

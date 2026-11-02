@@ -1,0 +1,24 @@
+const ARMS=['without','with'];
+export function codeChecksView(state,target='both',connected=false){
+ const selected=target==='both'?ARMS:ARMS.includes(target)?[target]:[],ci=state?.code_checks;
+ const unsupported=ci?.capability==='unsupported_platform',availability=unsupported?'Check code requires macOS or Linux with its supported local sandbox.':ci?.capability==='requires_linux_sandbox_check'?'Linux checks require bubblewrap and enabled unprivileged user namespaces.':'';
+ const ready=selected.length>0&&connected&&state?.status==='ready'&&selected.every(a=>state.arms?.[a]?.status==='ready'&&!state.arms[a].active_turn_id&&!state.arms[a].approvals?.length&&!state.arms[a].questions?.length);
+ return{enabled:ci?.enabled===true,availability,check:!unsupported&&ready&&ci?.enabled===true&&!selected.some(a=>ci.arms?.[a]?.running),feedback:!unsupported&&ready&&selected.every(a=>ci?.arms?.[a]?.latest?.feedback_available===true),ids:Object.fromEntries(selected.map(a=>[a,ci?.arms?.[a]?.latest?.id??null])),labels:Object.fromEntries(ARMS.map(a=>{const v=ci?.arms?.[a],r=v?.latest,s=r?.summary;let text=unsupported?'Unavailable':v?.running?'Checking…':r?.status==='stale'?'Changed · check again':!r?'Not checked':s?.state==='unavailable'?'Check unavailable':s?.public_tests&&s?.frozen_tests?(s.state==='passed'?'Passed ':'Failed ')+(s.public_tests.pass+s.frozen_tests.pass)+'/'+(s.public_tests.tests+s.frozen_tests.tests):'Not checked';return[a,text];}))};
+}
+export function mountCodeChecks(container,{post,onState,readTarget=()=> 'both',beforeFeedback=()=>{}}){
+ const doc=container.ownerDocument;let state=null,connected=false,pending=null;
+ container.classList.add('session-code-checks');container.setAttribute('aria-label','Code checks');
+ const title=doc.createElement('span');title.className='ci-title';title.textContent='Code checks';container.append(title);
+ const cells={};for(const arm of ARMS){const cell=doc.createElement('span'),name=doc.createElement('span'),value=doc.createElement('strong');name.textContent=arm==='with'?'With':'Without';cell.className='ci-result';cell.append(name,value);container.append(cell);cells[arm]=value;}
+ const actions=doc.createElement('span');actions.className='ci-actions';const check=doc.createElement('button'),feedback=doc.createElement('button');for(const b of[check,feedback]){b.type='button';b.className='secondary';actions.append(b);}check.textContent='Check code';feedback.textContent='Send CI feedback';container.append(actions);
+ const status=doc.createElement('span');status.className='ci-status';status.setAttribute('role','status');container.append(status);
+ const availability=doc.createElement('span');availability.className='ci-status';container.append(availability);
+ function render(next,options={}){if(state?.session_generation!==next?.session_generation){status.textContent='';pending=null;}state=next;connected=options.connected===true;const view=codeChecksView(state,readTarget(),connected);container.hidden=!view.enabled;availability.textContent=view.availability;for(const a of ARMS)cells[a].textContent=view.labels[a];check.disabled=pending||!view.check;feedback.disabled=pending||!view.feedback;check.title=view.availability||'Run public and frozen tests for the selected agents';feedback.title=view.availability||'Ask selected agents to review their own checked results';}
+ async function act(kind){if(pending)return;const target=readTarget(),view=codeChecksView(state,target,connected),generation=state?.session_generation;if(!(kind==='check'?view.check:view.feedback))return;
+  const operation={generation};pending=operation;render(state,{connected});status.textContent=kind==='check'?'Starting checks…':'Sending checked results…';
+  try{if(kind==='feedback')beforeFeedback();const out=await post('ci/'+kind,{target,actor:'participant',generation,...(kind==='feedback'?{checks:view.ids}:{})});if(pending!==operation||state?.session_generation!==generation)return;onState(out.state);if(pending!==operation||state?.session_generation!==generation)return;if(out.state?.session_generation!==generation){status.textContent='Session changed. Check the current results.';return;}status.textContent=kind==='check'?'':out.outcome?.status==='started'?'Results sent to the selected agents.':out.outcome?.status==='not_started'?'Not sent. Check the selected agents again.':'Some sends could not be confirmed. Check each pane.';}
+  catch(error){if(pending!==operation||state?.session_generation!==generation)return;status.textContent=['ci_feedback_stale','ci_session_changed'].includes(error.message)?'Code changed. Check again before sending.':'Could not confirm this action. No automatic retry.';}
+  finally{if(pending===operation){pending=null;render(state,{connected});}}
+ }
+ check.addEventListener('click',()=>void act('check'));feedback.addEventListener('click',()=>void act('feedback'));return{render};
+}

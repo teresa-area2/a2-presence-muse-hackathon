@@ -1,0 +1,36 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {pathToFileURL} from 'node:url';
+const root=process.env.A2_OBSERVER_TEST_ROOT??new URL('../',import.meta.url).pathname;
+const {ComparisonReportService}=await import(pathToFileURL(root+'/src/observer-report-service.mjs'));
+const {comparisonPacketView}=await import(pathToFileURL(root+'/src/observer-report.mjs'));
+const {buildEvidencePackage}=await import(pathToFileURL(root+'/src/evidence-package.mjs'));
+const {observerState,inertObserver}=await import(pathToFileURL(root+'/tests/helpers/observer-state.mjs'));
+const {structuredFixtureReport}=await import(pathToFileURL(root+'/tests/helpers/comparison-report.mjs'));
+const ui=await import(pathToFileURL(root+'/web/session-evidence.mjs'));
+const run='10000000-0000-4000-8000-000000000001',sha=x=>createHash('sha256').update(x).digest('hex');
+const originalClaim='Each agent continued after one accepted steering.';
+function fixture(){let clock=Date.parse('2026-11-02T12:00:00.000Z');const state=observerState();for(const actor of ['participant','coordinator','unattributed'])for(const arm of ['without','with'])Object.assign(state.measurement.turn_actions[actor][arm],{steering_accepted:0,interrupt_accepted:actor==='participant'?1:0,interrupt_unconfirmed:0});
+ const ctx={generation:1,pair:{snapshot:()=>structuredClone(state)}},packets=[];const service=new ComparisonReportService({now:()=>clock,capture:async()=>({without:{status:'unavailable'},with:{status:'unavailable'}}),readState:()=>structuredClone(state),review:async packet=>{packets.push(comparisonPacketView(packet));const report=structuredFixtureReport(packet);report.overall.text=originalClaim;return{report,usage:{status:'observed',model_calls:1,input_tokens:20,output_tokens:10}};}});
+ return{state,ctx,service,packets,tick:()=>clock+=1000,async assess(){const preview=await service.prepare(ctx,state);await service.generate(ctx,state,preview.id);await service.wait(ctx);return service.view(ctx,state);}};}
+function exported(view){return buildEvidencePackage({checkpoint:{run_id:run,session_generation:1,revision:1},identity:{run_id:run,session_generation:1},createdAt:'2026-11-02T12:00:03.000Z',assessment:{run_id:run,session_generation:1,captured_at:'2026-11-02T12:00:03.000Z',view}});}
+test('actual packet → report view → export preserves zero steering and one interrupt without rewriting an incorrect assessment',async t=>{
+ const f=fixture();t.after(()=>f.service.close());const view=await f.assess(),report=view.reports[0],packet=f.packets[0];assert.equal(report.status,'completed');assert.equal(report.report.overall.text,originalClaim);assert.equal(report.input_packet.fingerprint,sha(JSON.stringify(packet.payload)));assert.equal(report.input_packet.bytes,Buffer.byteLength(JSON.stringify(packet.payload)));assert.equal(report.input_packet.captured_at,packet.payload.captured_at);
+ for(const arm of ['without','with']){const e=report.recorded_facts.evidence.find(e=>e.id==='interactions.'+arm);assert.equal(e.actors.participant.steering_accepted,0);assert.equal(e.actors.participant.interrupt_accepted,1);assert.equal(e.available.turn_actions,true);}
+ const out=exported(view).assessment.reports[0];assert.equal(out.id,report.id);assert.deepEqual(out.input_packet,report.input_packet);assert.equal(out.report.overall.text,originalClaim);assert.deepEqual(out.report.overall.model_selected_evidence_ids,report.report.overall.evidence_ids);
+ for(const arm of ['without','with']){const e=out.evidence.find(e=>e.id==='interactions.'+arm);assert.equal(e.actors.participant.steering_accepted,0);assert.equal(e.actors.participant.interrupt_accepted,1);const m=out.evidence.find(e=>e.kind==='message'&&e.author==='You'&&e.arm===arm);assert.equal(m.phase,'sent');assert.equal(m.delivery,'submitted');}
+ assert.equal(JSON.stringify(out).includes('PRIVATE_USER_MESSAGE'),false);assert.equal(JSON.stringify(out).includes('OLDER_PRIVATE_RESPONSE'),false);
+});
+test('unknown action availability remains unknown rather than displayed or exported as an observed zero',async t=>{
+ const f=fixture();t.after(()=>f.service.close());delete f.state.measurement.turn_actions;const view=await f.assess(),out=exported(view).assessment.reports[0];for(const arm of ['without','with']){const e=out.evidence.find(e=>e.id==='interactions.'+arm);assert.equal(e.available.turn_actions,false);assert.equal(e.actors.participant.steering_accepted,null);assert.equal(e.actors.participant.interrupt_accepted,null);}
+ const {container,nodes}=inertObserver();ui.renderRecordedActions(nodes['comparison-recorded-action-table'],view.reports[0]);const text=read(nodes['comparison-recorded-action-table']);assert.match(text,/Unknown/);
+});
+function read(n){return(n.textContent??'')+(n.children??[]).map(read).join(' ');}
+test('recorded facts render separately and keep an observed zero while preserving original model prose',async t=>{
+ const f=fixture();t.after(()=>f.service.close());const view=await f.assess(),{container,nodes}=inertObserver();const panel=ui.mountComparisonReport(container,{enabled:true,post:async()=>{},onState(){}});panel.render({...f.state,muse_comparison:view},{connected:true});assert.equal(nodes['comparison-paragraph'].textContent,originalClaim);const facts=read(nodes['comparison-recorded-action-table']);assert.match(facts,/Recorded per-arm receipts/);assert.match(facts,/Accepted steering 0 0/);assert.match(facts,/Accepted interrupt 1 1/);assert.ok(!facts.includes(originalClaim));
+});
+test('later report identity never overwrites earlier immutable packet facts, metadata or wording',async t=>{
+ const f=fixture();t.after(()=>f.service.close());const first=(await f.assess()).reports[0];f.tick();for(const arm of ['without','with'])f.state.measurement.turn_actions.participant[arm].steering_accepted=2;const view=await f.assess(),out=exported(view).assessment.reports;assert.equal(out.length,2);assert.notEqual(out[0].id,out[1].id);assert.notEqual(out[0].fingerprint,out[1].fingerprint);assert.equal(out[0].id,first.id);assert.equal(out[0].evidence.find(e=>e.id==='interactions.with').actors.participant.steering_accepted,0);assert.equal(out[1].evidence.find(e=>e.id==='interactions.with').actors.participant.steering_accepted,2);assert.equal(out[0].input_packet.fingerprint,first.fingerprint);assert.equal(out[0].report.overall.text,originalClaim);
+ const forged=structuredClone(view);forged.reports[0].input_packet.fingerprint=forged.reports[1].fingerprint;assert.equal(exported(forged).assessment.reports[0].input_packet,null);
+});
+test('typed facts omit unknown nested fields and report view mutations do not change retained input facts',async t=>{
+ const f=fixture();t.after(()=>f.service.close());f.state.measurement.turn_actions.participant.with.private='PRIVATE_CREDENTIAL';const view=await f.assess(),report=view.reports[0];assert.ok(!JSON.stringify(report.recorded_facts).includes('PRIVATE_CREDENTIAL'));report.recorded_facts.evidence.find(e=>e.id==='interactions.with').actors.participant.steering_accepted=999;report.input_packet.bytes=1;const retained=f.service.view(f.ctx,f.state).reports[0];assert.equal(retained.recorded_facts.evidence.find(e=>e.id==='interactions.with').actors.participant.steering_accepted,0);assert.equal(retained.input_packet.bytes,f.packets[0].bytes);
+});

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "agent_lab": {
+    "commit": "ba8bf79073aae931e55fe6d1deb20f71d6a02b49",
+    "distribution": "selected in-repository source snapshot, Area2-authorized Apache-2.0, original host notices retained",
+    "bundle_manifest_sha256": "5a770066cd139526e50cdb22d874f1b8c7f2791eca760ac32cd897dc48244f75",
+    "bundled_root": "vendor/agent-lab"
+  },
+  "presence_runtime": {
+    "commit": "2183c6b75f6b11216f3a85b7268f46d8a2008c2f",
+    "required_for": "optional desktop source only; not textbox path"
+  },
+  "capsule_validator": {
+    "repository_commit": "12c6b509f97e42568563bbadfa9c7e49d2ad33b0",
+    "entry": "integrations/ai-sdk/dist/client/instructions.js",
+    "sha256": "7d03442ea27814f987f2111022c5a517dcb3d8bb68f89620c91c50c4420a811b",
+    "export": "resolveCodingInstructions",
+    "verification": "bundled manifest and all dependency bytes verified before import; explicit external artifact must match original SHA-256",
+    "distribution": "selected Area2 snapshot authorized Apache-2.0 on 2026-10-31; transitive MIT/BSD notices retained",
+    "bundled_entry": "vendor/capsule-validator/instructions.mjs",
+    "bundle_manifest_sha256": "9599279ba6924f2b1b4e3cec0c16894b2539dfc364ce45ef71a74b4a36e5a9f6",
+    "source_provenance": "exact untracked local artifact over recorded base commit; associated source/schema snapshots retained with independent hashes"
+  },
+  "cipher": {
+    "react": "3.0.0",
+    "core": "2.1.0",
+    "lockfile": "integrations/cipher-textbox/package-lock.json",
+    "distribution": "registry installation using existing authorized access; MIT notices required for distributed bundles"
+  },
+  "muse": {
+    "qualified_version": "1.4.13",
+    "model": "muse-spark-1.3",
+    "contributor_mode": "off",
+    "distribution": "separate vendor installation and account",
+    "builder_model": "muse-wonder-1.0"
+  },
+  "op_service": {
+    "schema": "open_presence.controls.v0.4",
+    "instructions": "coding-instructions.3",
+    "user_mode": "internal",
+    "distribution": "separate service credentials/admission; no secrets in browser/repository"
+  },
+  "pulse": {
+    "source": "vendor/agent-lab/interactive-public/{pulse.mjs,presence-print.mjs,pulse.css}",
+    "commit": "ba8bf79073aae931e55fe6d1deb20f71d6a02b49",
+    "distribution": "included with the pinned Agent Lab snapshot; Area2 authorizes selected source Apache-2.0"
+  },
+  "font": {
+    "source": "system sans-serif",
+    "bundled": false
+  }
+}

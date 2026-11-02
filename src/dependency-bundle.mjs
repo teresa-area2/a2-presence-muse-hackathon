@@ -1,0 +1,23 @@
+// Verify approved, pinned dependency bytes once at startup, before import/serve.
+import fs from 'node:fs/promises';import path from 'node:path';import {createHash} from 'node:crypto';
+const IDS=new Set(['agent-lab','capsule-validator','cipher']),HEX=/^[a-f0-9]{64}$/;
+export const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
+function relative(name){if(typeof name!=='string'||!name||path.isAbsolute(name)||name.includes('\\')||/[\x00-\x1f\x7f]/.test(name)||name.split('/').some(p=>!p||p==='.'||p==='..'||/^(?:\.git|\.local|\.env(?:\..*)?|\.npmrc(?:\..*)?|credentials|secrets)$/i.test(p)))throw Error('dependency_path_invalid');return name;}
+async function realFile(root,name){relative(name);let cursor=root;const parts=name.split('/');for(let i=0;i<parts.length;i++){cursor=path.join(cursor,parts[i]);const st=await fs.lstat(cursor);if(st.isSymbolicLink()||(i<parts.length-1?!st.isDirectory():!st.isFile()))throw Error('dependency_file_unsafe');}return cursor;}
+async function list(root,prefix=''){const rows=[];for(const e of await fs.readdir(path.join(root,prefix),{withFileTypes:true})){const rel=prefix?prefix+'/'+e.name:e.name;relative(rel);if(e.isSymbolicLink())throw Error('dependency_file_unsafe');if(e.isDirectory())rows.push(...await list(root,rel));else if(e.isFile())rows.push(rel);else throw Error('dependency_file_unsafe');if(rows.length>512)throw Error('dependency_bundle_limit');}return rows;}
+export async function readDependencyBundle({repoRoot,id,manifestSha256,bundleRoot=null,required=false}){
+ if(!path.isAbsolute(repoRoot??'')||!IDS.has(id))throw Error('dependency_arguments_invalid');repoRoot=await fs.realpath(repoRoot);const parent=bundleRoot===null?path.join(repoRoot,'vendor'):path.resolve(bundleRoot);const root=path.join(parent,id);let st;try{st=await fs.lstat(root);}catch(e){if(e.code==='ENOENT'&&!required)return null;throw Error('dependency_bundle_missing');}
+ if(!st.isDirectory()||st.isSymbolicLink())throw Error('dependency_file_unsafe');if(!HEX.test(manifestSha256??''))throw Error('dependency_manifest_pin_required');
+ let ancestor=path.parse(parent).root;for(const part of parent.slice(ancestor.length).split(path.sep).filter(Boolean)){ancestor=path.join(ancestor,part);const info=await fs.lstat(ancestor);if(info.isSymbolicLink()||!info.isDirectory())throw Error('dependency_root_unsafe');}
+ const realRoot=await fs.realpath(root),realParent=await fs.realpath(parent);if(!realRoot.startsWith(realParent+path.sep))throw Error('dependency_root_unsafe');
+ const manifestPath=await realFile(root,'manifest.json'),raw=await fs.readFile(manifestPath);if(raw.length>131072||sha256(raw)!==manifestSha256)throw Error('dependency_manifest_mismatch');let m;try{m=JSON.parse(raw);}catch{throw Error('dependency_manifest_invalid');}
+ if(m?.schema_version!==1||m.id!==id||!Array.isArray(m.files)||!m.files.length||m.files.length>511||!Array.isArray(m.inputs??[])||m.inputs?.length>64)throw Error('dependency_manifest_invalid');
+ if(!['licensed','owner-authorized'].includes(m.rights?.status)||typeof m.rights.license_spdx!=='string'||!Array.isArray(m.rights.evidence)||!m.rights.evidence.length)throw Error('dependency_distribution_unapproved');
+ const files=new Map();let size=0;
+ for(const row of m.files){relative(row?.path);if(row.path==='manifest.json'||files.has(row.path)||!HEX.test(row.sha256??''))throw Error('dependency_manifest_invalid');const file=await realFile(root,row.path),info=await fs.stat(file);size+=info.size;if(info.size>8*1024*1024||size>32*1024*1024)throw Error('dependency_bundle_limit');const bytes=await fs.readFile(file);if(sha256(bytes)!==row.sha256)throw Error('dependency_file_mismatch');files.set(row.path,file);}
+ const actual=(await list(root)).filter(x=>x!=='manifest.json').sort();if(JSON.stringify(actual)!==JSON.stringify([...files.keys()].sort()))throw Error('dependency_unlisted_file');
+ for(const notice of m.rights.evidence)if(!files.has(notice))throw Error('dependency_notice_missing');
+ for(const row of m.inputs??[]){relative(row?.path);if(row.path.split('/').includes('node_modules')||!HEX.test(row.sha256??''))throw Error('dependency_input_invalid');const file=await realFile(repoRoot,row.path);if(sha256(await fs.readFile(file))!==row.sha256)throw Error('dependency_input_mismatch');}
+ if(m.runtime_entry!==undefined&&!files.has(m.runtime_entry))throw Error('dependency_entry_missing');
+ return Object.freeze({root,manifest:Object.freeze(m),manifestSha256,entry:m.runtime_entry?files.get(m.runtime_entry):null,file(name){if(!files.has(name))throw Error('dependency_file_not_declared');return files.get(name);}});
+}

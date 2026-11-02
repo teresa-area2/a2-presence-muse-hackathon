@@ -1,0 +1,28 @@
+{
+  "name": "a2-presence-muse-hackathon",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.12.0 <23"
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test:offline": "node --experimental-strip-types --test tests/*.test.mjs",
+    "setup:cipher": "npm ci --prefix integrations/cipher-textbox --ignore-scripts --no-audit --fund=false",
+    "build": "node scripts/build-cipher-textbox.mjs",
+    "check:setup": "node scripts/check-setup.mjs --offline && node scripts/check-dependencies.mjs",
+    "prepare:task": "node scripts/prepare-coding-comparison.mjs",
+    "workspace": "node --experimental-strip-types workspace.mjs",
+    "test:tasks": "node coding-tasks/verify.mjs",
+    "build:validator": "node scripts/build-capsule-validator.mjs",
+    "check:dependencies": "node scripts/check-dependencies.mjs",
+    "evidence:batch": "node --experimental-strip-types scripts/evidence-batch.mjs",
+    "judge:install": "node scripts/judge-install.mjs",
+    "judge:start": "node --experimental-strip-types scripts/judge-start.mjs",
+    "demo:offline": "node scripts/simulate-textbox.mjs",
+    "check:linux-sandbox": "node scripts/check-linux-sandbox.mjs",
+    "evidence:public": "node scripts/export-public-evidence.mjs"
+  }
+}

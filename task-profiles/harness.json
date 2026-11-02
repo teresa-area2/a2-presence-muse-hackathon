@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "kind": "project",
+  "repository": {
+    "root": "/path/to/this/checkout",
+    "commit": null
+  },
+  "source": {
+    "include": [
+      "src/",
+      "web/",
+      "docs/",
+      "tests/",
+      "scripts/",
+      "task-profiles/",
+      "AGENTS.md",
+      "README.md",
+      "LICENSE",
+      "components.json",
+      "setup-requirements.json",
+      "setup.example.json",
+      "workspace.mjs",
+      "structured-live.mjs",
+      "structured-server.mjs"
+    ]
+  },
+  "task": {
+    "id": "PROJECT-06",
+    "prompt": "# PROJECT-06 \u2014 Presence-aware progress without missed decisions\n\n## Goal\n\nHelp a person follow two coding agents without unnecessary interruptions.\nIn the Presence-enabled workspace, adapt optional progress commentary to the\ncurrently eligible Presence collaboration policy. Make the adaptation visible\nand reversible; keep essential information and the person's control intact.\n\n## Same task for both Muse agents\n\nWork in your isolated copy of this project. Before editing, propose a short\nplan and ask the person for any decision you actually need. Wait for their\nresponse before implementation.\n\nImplement a small, testable presentation policy for optional agent commentary\nin the structured comparison. When the Presence arm's eligible policy says to\n`defer` optional updates, group or hold those optional commentary messages and\nshow the person that updates are being held. When the policy changes to `send`\nor becomes ineligible or unavailable, release the held commentary in order.\nProvide a clear manual way to reveal held commentary immediately. The baseline\narm continues to show ordinary updates and never receives Presence data.\n\nUser messages, approval requests, errors, final answers, and anything needed\nfor a decision must remain visible immediately. Never infer a person's state,\nclaim a guidance read proves model behavior, alter the collector or packaging,\nautomatically approve commands, or make temporary Presence data a permanent\npreference. Show receipt age and distinguish current capture from an older\neligible receipt. Follow the existing consumer eligibility contract; do not\ninvent a new age cutoff.\n\nUse the existing structured session and Presence projections. Add focused\nregression tests covering both arms, held updates, user reveal, policy change,\nordinary fallback, ordering, and mandatory information. Run the relevant tests.\nExplain what changed, what was verified, and what remains uncertain. No commits,\npublication, external services, dependency installs or changes to the collector.\n\n## How Teresa will test\n\n1. Send the shared request for a plan and read both replies.\n2. Give both agents the same implementation instruction and handle each\n   approval in its own pane.\n3. Ask both agents the same follow-up: \u201cWhat did you change, how did you test\n   it, and how can I see when Presence changes the experience?\u201d\n4. Compare whether essential information was visible, the number of optional\n   interruptions, Teresa's own effort, completion, and available resource\n   counts. An observed difference is not automatically a proven benefit.\n"
+  },
+  "verification": {
+    "mode": "project",
+    "subset": true,
+    "note": "Reviewed deterministic session-controls/commentary/native-permissions subset; host socket and macOS sandbox checks remain coordinator gates.",
+    "own_tests": [
+      "tests/session-controls.test.mjs",
+      "tests/commentary-policy.test.mjs",
+      "tests/native-controls.test.mjs"
+    ],
+    "trusted": {
+      "tests": [
+        "tests/session-controls.test.mjs",
+        "tests/native-controls.test.mjs"
+      ],
+      "plan_hash": null
+    }
+  },
+  "limits": {
+    "max_files": 256,
+    "max_file_bytes": 128000,
+    "max_total_bytes": 4194304
+  },
+  "notes": [
+    "Coordinator replaces repository.root with the real absolute checkout path and freezes repository.commit once before preparing either arm.",
+    "A null trusted plan_hash means: freeze the listed trusted test bytes automatically from the selected commit at startup. An explicitly supplied 64-hex plan_hash must exactly match those frozen bytes or preparation refuses; the placeholder never verifies.",
+    "Browser requests can never change this profile: only A2_MUSE_TASK_PROFILE at server startup selects it."
+  ]
+}

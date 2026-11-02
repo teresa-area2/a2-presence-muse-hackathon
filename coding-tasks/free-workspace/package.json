@@ -1,0 +1,6 @@
+{
+  "name": "my-presence-coding-task",
+  "private": true,
+  "type": "module",
+  "scripts": {"test": "node --test"}
+}

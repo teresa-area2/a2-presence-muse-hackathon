@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import path from 'node:path';import {pathToFileURL} from 'node:url';
+const dir=process.env.TASK_PROJECT_DIR??new URL('..',import.meta.url).pathname;const {saveEdit}=await import(pathToFileURL(path.resolve(dir,'src/save.mjs')));
+test('conflict refreshes the server revision and keeps the draft',async()=>{let count=0;const client={save:async(id,patch,revision)=>{count++;if(count===1)throw Object.assign(new Error('conflict'),{code:'CONFLICT'});return {patch,revision}},get:async()=>({revision:4,fields:{title:'Old',status:'open'}})};assert.deepEqual(await saveEdit(client,'task',{title:'New'},1),{patch:{title:'New',status:'open'},revision:4})});

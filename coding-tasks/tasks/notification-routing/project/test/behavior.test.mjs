@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import path from 'node:path';import {pathToFileURL} from 'node:url';
+const dir=process.env.TASK_PROJECT_DIR??new URL('..',import.meta.url).pathname;const {selectChannels}=await import(pathToFileURL(path.resolve(dir,'src/notify.mjs')));
+test('quiet hours suppress ordinary notifications but not urgent ones',()=>{const p={channels:['email','sms'],enabled:{email:true,sms:false},quietHours:{start:1320,end:420}};assert.deepEqual(selectChannels({minute:60,urgent:false},p),[]);assert.deepEqual(selectChannels({minute:60,urgent:true},p),['email'])});

@@ -1,0 +1,1 @@
+export function selectChannels(event,preferences){const {start,end}=preferences.quietHours;const quiet=start===end?false:start<end?event.minute>=start&&event.minute<end:event.minute>=start||event.minute<end;return [...new Set(preferences.channels)].filter(c=>preferences.enabled[c]===true&&(event.urgent===true||!quiet))}

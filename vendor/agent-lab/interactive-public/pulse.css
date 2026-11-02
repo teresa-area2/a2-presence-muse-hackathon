@@ -1,0 +1,20 @@
+.presence-pulse{--pulse-paper:transparent;--pulse-ink:#d9e5f0;display:flex;align-items:center;gap:12px;min-width:0;color:var(--pulse-ink);font-family:inherit}
+.presence-pulse .pulse-art{width:148px;height:148px;flex:0 0 148px;display:grid;place-items:center;background:transparent;overflow:hidden}
+.presence-pulse .pulse-art svg{display:block;width:100%;height:100%;overflow:visible}
+.presence-pulse .pulse-copy{display:flex;flex-direction:column;gap:6px;min-width:0}
+.presence-pulse .pulse-status{font-size:13px;font-weight:600}
+.presence-pulse .pulse-values{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;letter-spacing:.025em}
+.presence-pulse small{font-size:10px;line-height:1.45;color:#99abba;max-width:260px}
+.presence-pulse .pulse-motion-note{font-size:9px;color:#798d9e}
+.presence-pulse [data-print-ring]{stroke-width:2.4}
+.presence-pulse [data-print-accent]{filter:drop-shadow(0 0 2px #f6c08e22)}
+.presence-pulse :is([data-print-ring],[data-print-accent]){transform-box:view-box;transform-origin:50% 50%;animation:presence-pulse-breath var(--pulse-period) ease-in-out var(--pulse-delay) infinite;animation-play-state:paused}
+.presence-pulse [data-ambient=running] :is([data-print-ring],[data-print-accent]){animation-play-state:running}
+.presence-pulse [data-ambient=paused] :is([data-print-ring],[data-print-accent]){animation:none;transform:none}
+.presence-pulse .pulse-unavailable-shape{font-size:94px;line-height:1;color:#728391;opacity:.3;animation:none}
+.presence-pulse[data-available=false] .pulse-values,.presence-pulse[data-available=false] .pulse-status{color:#8b9dab}
+.presence-pulse[data-available=false] .pulse-motion-note{visibility:hidden}
+@keyframes presence-pulse-breath{0%,100%{transform:scale(1)}50%{transform:scale(var(--pulse-scale))}}
+@media(prefers-color-scheme:light){.presence-pulse{--pulse-ink:#353448}.presence-pulse small{color:#606b7c}.presence-pulse .pulse-motion-note{color:#727e90}}
+@media(prefers-reduced-motion:reduce){.presence-pulse :is([data-print-ring],[data-print-accent]){animation:none!important;transform:none!important}}
+@media(max-width:600px){.presence-pulse .pulse-art{width:112px;height:112px;flex-basis:112px}.presence-pulse{gap:6px}}

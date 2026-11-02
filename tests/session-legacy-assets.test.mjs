@@ -1,0 +1,6 @@
+import test from'node:test';import assert from'node:assert/strict';import path from'node:path';import{createStructuredServer}from'../structured-server.mjs';
+test('desktop browser module graph needs no opt-in textbox routes, preserving an older running server',async t=>{
+ const server=createStructuredServer({root:path.resolve('.'),labRoot:path.resolve('.'),createPair:async()=>{throw Error('must_not_start');}});await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(()=>server.shutdown());const base='http://127.0.0.1:'+server.address().port,seen=new Set(),queue=['/session-app.mjs'];
+ while(queue.length){const route=queue.shift();if(seen.has(route))continue;seen.add(route);const r=await fetch(base+route);assert.equal(r.status,200,route);const source=await r.text();for(const match of source.matchAll(/(?:^|\n)\s*import\s+(?:[^;\n]*?\sfrom\s*)?['"]([^'"]+)['"]/g)){const target=new URL(match[1],base+route);assert.equal(target.origin,base);queue.push(target.pathname);}}
+ assert.ok(seen.has('/terminal-presence-view.mjs'));assert.equal(seen.has('/textbox-presence-client.mjs'),false);assert.equal((await fetch(base+'/textbox-presence-client.mjs')).status,403);const config=await(await fetch(base+'/api/config')).json();assert.equal(config.textbox_presence.enabled,false);
+});

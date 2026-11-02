@@ -1,0 +1,1584 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "open_presence.controls.v0.4",
+  "title": "Open Presence Coding Instructions v0.4",
+  "description": "Every successful coding Capsule supplies all three suggestions. A2 owns calibration, sufficiency and operating defaults. Errors are not successful Capsules.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "profile",
+    "controls",
+    "generated_at",
+    "provenance",
+    "instructions"
+  ],
+  "properties": {
+    "schema": {
+      "const": "open_presence.controls.v0.4"
+    },
+    "status": {
+      "const": "experimental"
+    },
+    "profile": {
+      "const": "coding"
+    },
+    "controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "response_extent",
+        "conversation_style",
+        "unsolicited_update"
+      ],
+      "properties": {
+        "response_extent": {
+          "enum": [
+            "terse",
+            "standard",
+            "full"
+          ],
+          "description": "Extent of explanatory prose only. Never reduce task completeness, code, safety or approvals. A2 operating default: standard."
+        },
+        "conversation_style": {
+          "enum": [
+            "self_contained",
+            "conversational"
+          ],
+          "description": "Complete the task first. Renderer .1 permits an optional continuation; .2 requests one useful optional continuation unless explicit instructions or context exclude it. .3 refines the closing without reducing requested explanatory coverage. Never require back-and-forth. A2 operating default: self_contained."
+        },
+        "unsolicited_update": {
+          "enum": [
+            "send",
+            "defer"
+          ],
+          "description": "Only independently eligible nonessential unsolicited updates. Send removes a Presence hold, not permission to interrupt. Essential errors, requested results and approvals bypass deferral. A2 operating default: send."
+        }
+      }
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$",
+      "description": "Traceability and application-owned ordering, not automatic expiry or proof of recent capture."
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider_kind",
+        "provider_version",
+        "conformance_only"
+      ],
+      "properties": {
+        "provider_kind": {
+          "enum": [
+            "production",
+            "reference",
+            "fixture"
+          ]
+        },
+        "provider_version": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "conformance_only": {
+          "type": "boolean"
+        },
+        "fixture_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "provider_kind": {
+                "const": "fixture"
+              }
+            },
+            "required": [
+              "provider_kind"
+            ],
+            "type": "object"
+          },
+          "then": {
+            "required": [
+              "fixture_id"
+            ],
+            "properties": {
+              "fixture_id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "conformance_only": {
+                "const": true
+              }
+            },
+            "type": "object"
+          }
+        }
+      ]
+    },
+    "instructions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "llm",
+        "application"
+      ],
+      "properties": {
+        "version": {
+          "enum": [
+            "coding-instructions.1",
+            "coding-instructions.2",
+            "coding-instructions.3"
+          ]
+        },
+        "llm": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "preamble",
+            "extent_preamble"
+          ],
+          "properties": {
+            "preamble": {
+              "type": "string"
+            },
+            "extent_preamble": {
+              "type": "string"
+            }
+          }
+        },
+        "application": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "unsolicited_update"
+          ],
+          "properties": {
+            "unsolicited_update": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: minimal. Answer the user's actual request directly. Include the essential answer, necessary code and required caveats; omit optional background, examples and alternatives. An explanation request still needs the cause, not just a statement that something was fixed.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: minimal. Answer the user's actual request directly. Include the essential answer, necessary code and required caveats; omit optional background, examples and alternatives. An explanation request still needs the cause, not just a statement that something was fixed."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: minimal. Answer the user's actual request directly. Include the essential answer, necessary code and required caveats; omit optional background, examples and alternatives. An explanation request still needs the cause, not just a statement that something was fixed.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: minimal. Answer the user's actual request directly. Include the essential answer, necessary code and required caveats; omit optional background, examples and alternatives. An explanation request still needs the cause, not just a statement that something was fixed."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "conversational",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: minimal. Answer the user's actual request directly. Include the essential answer, necessary code and required caveats; omit optional background, examples and alternatives. An explanation request still needs the cause, not just a statement that something was fixed.\nConversation style: optional follow-up. Complete everything answerable now, then, only if useful, ask at most one relevant non-blocking follow-up question or offer one next step, not both. Do not withhold the answer to force another turn. Respect a user's explicit request for an iterative exchange.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: minimal. Answer the user's actual request directly. Include the essential answer, necessary code and required caveats; omit optional background, examples and alternatives. An explanation request still needs the cause, not just a statement that something was fixed."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "conversational",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: minimal. Answer the user's actual request directly. Include the essential answer, necessary code and required caveats; omit optional background, examples and alternatives. An explanation request still needs the cause, not just a statement that something was fixed.\nConversation style: optional follow-up. Complete everything answerable now, then, only if useful, ask at most one relevant non-blocking follow-up question or offer one next step, not both. Do not withhold the answer to force another turn. Respect a user's explicit request for an iterative exchange.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: minimal. Answer the user's actual request directly. Include the essential answer, necessary code and required caveats; omit optional background, examples and alternatives. An explanation request still needs the cause, not just a statement that something was fixed."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: normal. Answer the user's actual request and give a brief explanation of the main reason or change. Include necessary steps or code and the actual verification result when applicable. Omit tangential detail.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: normal. Answer the user's actual request and give a brief explanation of the main reason or change. Include necessary steps or code and the actual verification result when applicable. Omit tangential detail."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: normal. Answer the user's actual request and give a brief explanation of the main reason or change. Include necessary steps or code and the actual verification result when applicable. Omit tangential detail.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: normal. Answer the user's actual request and give a brief explanation of the main reason or change. Include necessary steps or code and the actual verification result when applicable. Omit tangential detail."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "conversational",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: normal. Answer the user's actual request and give a brief explanation of the main reason or change. Include necessary steps or code and the actual verification result when applicable. Omit tangential detail.\nConversation style: optional follow-up. Complete everything answerable now, then, only if useful, ask at most one relevant non-blocking follow-up question or offer one next step, not both. Do not withhold the answer to force another turn. Respect a user's explicit request for an iterative exchange.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: normal. Answer the user's actual request and give a brief explanation of the main reason or change. Include necessary steps or code and the actual verification result when applicable. Omit tangential detail."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "conversational",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: normal. Answer the user's actual request and give a brief explanation of the main reason or change. Include necessary steps or code and the actual verification result when applicable. Omit tangential detail.\nConversation style: optional follow-up. Complete everything answerable now, then, only if useful, ask at most one relevant non-blocking follow-up question or offer one next step, not both. Do not withhold the answer to force another turn. Respect a user's explicit request for an iterative exchange.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: normal. Answer the user's actual request and give a brief explanation of the main reason or change. Include necessary steps or code and the actual verification result when applicable. Omit tangential detail."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: extended. Answer the user's actual request with a structured explanation: explain the cause or rationale, how the answer or solution works, and relevant edge cases or trade-offs. Include a concrete example when it helps understanding. Report actual verification when applicable. Do not pad or repeat.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: extended. Answer the user's actual request with a structured explanation: explain the cause or rationale, how the answer or solution works, and relevant edge cases or trade-offs. Include a concrete example when it helps understanding. Report actual verification when applicable. Do not pad or repeat."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: extended. Answer the user's actual request with a structured explanation: explain the cause or rationale, how the answer or solution works, and relevant edge cases or trade-offs. Include a concrete example when it helps understanding. Report actual verification when applicable. Do not pad or repeat.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: extended. Answer the user's actual request with a structured explanation: explain the cause or rationale, how the answer or solution works, and relevant edge cases or trade-offs. Include a concrete example when it helps understanding. Report actual verification when applicable. Do not pad or repeat."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "conversational",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: extended. Answer the user's actual request with a structured explanation: explain the cause or rationale, how the answer or solution works, and relevant edge cases or trade-offs. Include a concrete example when it helps understanding. Report actual verification when applicable. Do not pad or repeat.\nConversation style: optional follow-up. Complete everything answerable now, then, only if useful, ask at most one relevant non-blocking follow-up question or offer one next step, not both. Do not withhold the answer to force another turn. Respect a user's explicit request for an iterative exchange.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: extended. Answer the user's actual request with a structured explanation: explain the cause or rationale, how the answer or solution works, and relevant edge cases or trade-offs. Include a concrete example when it helps understanding. Report actual verification when applicable. Do not pad or repeat."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "conversational",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.1"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.1",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: extended. Answer the user's actual request with a structured explanation: explain the cause or rationale, how the answer or solution works, and relevant edge cases or trade-offs. Include a concrete example when it helps understanding. Report actual verification when applicable. Do not pad or repeat.\nConversation style: optional follow-up. Complete everything answerable now, then, only if useful, ask at most one relevant non-blocking follow-up question or offer one next step, not both. Do not withhold the answer to force another turn. Respect a user's explicit request for an iterative exchange.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences.\nResponse extent: extended. Answer the user's actual request with a structured explanation: explain the cause or rationale, how the answer or solution works, and relevant edge cases or trade-offs. Include a concrete example when it helps understanding. Report actual verification when applicable. Do not pad or repeat."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: minimal. Answer the user's actual request in 40-80 words of explanatory prose: direct answer or cause, essential change or next action, and actual verification if applicable. Omit optional background, alternate solutions and walkthroughs. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: minimal. Answer the user's actual request in 40-80 words of explanatory prose: direct answer or cause, essential change or next action, and actual verification if applicable. Omit optional background, alternate solutions and walkthroughs. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: minimal. Answer the user's actual request in 40-80 words of explanatory prose: direct answer or cause, essential change or next action, and actual verification if applicable. Omit optional background, alternate solutions and walkthroughs. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: minimal. Answer the user's actual request in 40-80 words of explanatory prose: direct answer or cause, essential change or next action, and actual verification if applicable. Omit optional background, alternate solutions and walkthroughs. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "conversational",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: minimal. Answer the user's actual request in 40-80 words of explanatory prose: direct answer or cause, essential change or next action, and actual verification if applicable. Omit optional background, alternate solutions and walkthroughs. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: one optional continuation. After a complete answer, end with exactly one brief, relevant, non-blocking follow-up question OR one offered next step, not both. Make responding optional; never withhold work or require a reply. Omit this continuation if the user forbids it, the application's rules prohibit it, or no useful task-related continuation exists. Necessary clarification, consent and approval still take precedence.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: minimal. Answer the user's actual request in 40-80 words of explanatory prose: direct answer or cause, essential change or next action, and actual verification if applicable. Omit optional background, alternate solutions and walkthroughs. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "conversational",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: minimal. Answer the user's actual request in 40-80 words of explanatory prose: direct answer or cause, essential change or next action, and actual verification if applicable. Omit optional background, alternate solutions and walkthroughs. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: one optional continuation. After a complete answer, end with exactly one brief, relevant, non-blocking follow-up question OR one offered next step, not both. Make responding optional; never withhold work or require a reply. Omit this continuation if the user forbids it, the application's rules prohibit it, or no useful task-related continuation exists. Necessary clarification, consent and approval still take precedence.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: minimal. Answer the user's actual request in 40-80 words of explanatory prose: direct answer or cause, essential change or next action, and actual verification if applicable. Omit optional background, alternate solutions and walkthroughs. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: normal. Answer the user's actual request in 100-160 words of explanatory prose: direct answer, main mechanism or rationale, and necessary usage or actual verification. Explain enough to act without a detailed tutorial or multiple alternatives. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: normal. Answer the user's actual request in 100-160 words of explanatory prose: direct answer, main mechanism or rationale, and necessary usage or actual verification. Explain enough to act without a detailed tutorial or multiple alternatives. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: normal. Answer the user's actual request in 100-160 words of explanatory prose: direct answer, main mechanism or rationale, and necessary usage or actual verification. Explain enough to act without a detailed tutorial or multiple alternatives. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: normal. Answer the user's actual request in 100-160 words of explanatory prose: direct answer, main mechanism or rationale, and necessary usage or actual verification. Explain enough to act without a detailed tutorial or multiple alternatives. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "conversational",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: normal. Answer the user's actual request in 100-160 words of explanatory prose: direct answer, main mechanism or rationale, and necessary usage or actual verification. Explain enough to act without a detailed tutorial or multiple alternatives. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: one optional continuation. After a complete answer, end with exactly one brief, relevant, non-blocking follow-up question OR one offered next step, not both. Make responding optional; never withhold work or require a reply. Omit this continuation if the user forbids it, the application's rules prohibit it, or no useful task-related continuation exists. Necessary clarification, consent and approval still take precedence.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: normal. Answer the user's actual request in 100-160 words of explanatory prose: direct answer, main mechanism or rationale, and necessary usage or actual verification. Explain enough to act without a detailed tutorial or multiple alternatives. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "conversational",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: normal. Answer the user's actual request in 100-160 words of explanatory prose: direct answer, main mechanism or rationale, and necessary usage or actual verification. Explain enough to act without a detailed tutorial or multiple alternatives. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: one optional continuation. After a complete answer, end with exactly one brief, relevant, non-blocking follow-up question OR one offered next step, not both. Make responding optional; never withhold work or require a reply. Omit this continuation if the user forbids it, the application's rules prohibit it, or no useful task-related continuation exists. Necessary clarification, consent and approval still take precedence.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: normal. Answer the user's actual request in 100-160 words of explanatory prose: direct answer, main mechanism or rationale, and necessary usage or actual verification. Explain enough to act without a detailed tutorial or multiple alternatives. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: extended. Answer the user's actual request in 220-300 words of explanatory prose: direct answer, a grounded walkthrough of how the current or changed code behaves, one relevant worked example or edge case, and actual verification or its limits. Do not invent complexity to fill space; do not repeat yourself. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: extended. Answer the user's actual request in 220-300 words of explanatory prose: direct answer, a grounded walkthrough of how the current or changed code behaves, one relevant worked example or edge case, and actual verification or its limits. Do not invent complexity to fill space; do not repeat yourself. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: extended. Answer the user's actual request in 220-300 words of explanatory prose: direct answer, a grounded walkthrough of how the current or changed code behaves, one relevant worked example or edge case, and actual verification or its limits. Do not invent complexity to fill space; do not repeat yourself. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: single shot. Deliver a complete, self-contained answer. Do not append unsolicited follow-up questions or invitations. Necessary clarification, consent and approval must still be requested; never guess missing critical information.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: extended. Answer the user's actual request in 220-300 words of explanatory prose: direct answer, a grounded walkthrough of how the current or changed code behaves, one relevant worked example or edge case, and actual verification or its limits. Do not invent complexity to fill space; do not repeat yourself. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "conversational",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: extended. Answer the user's actual request in 220-300 words of explanatory prose: direct answer, a grounded walkthrough of how the current or changed code behaves, one relevant worked example or edge case, and actual verification or its limits. Do not invent complexity to fill space; do not repeat yourself. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: one optional continuation. After a complete answer, end with exactly one brief, relevant, non-blocking follow-up question OR one offered next step, not both. Make responding optional; never withhold work or require a reply. Omit this continuation if the user forbids it, the application's rules prohibit it, or no useful task-related continuation exists. Necessary clarification, consent and approval still take precedence.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: extended. Answer the user's actual request in 220-300 words of explanatory prose: direct answer, a grounded walkthrough of how the current or changed code behaves, one relevant worked example or edge case, and actual verification or its limits. Do not invent complexity to fill space; do not repeat yourself. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Do not add a Presence-induced delay to independently eligible nonessential unsolicited updates. This is not permission to interrupt, send messages, or take actions. Application permissions and user preferences still apply."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "conversational",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.2"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.2",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: extended. Answer the user's actual request in 220-300 words of explanatory prose: direct answer, a grounded walkthrough of how the current or changed code behaves, one relevant worked example or edge case, and actual verification or its limits. Do not invent complexity to fill space; do not repeat yourself. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth.\nConversation style: one optional continuation. After a complete answer, end with exactly one brief, relevant, non-blocking follow-up question OR one offered next step, not both. Make responding optional; never withhold work or require a reply. Omit this continuation if the user forbids it, the application's rules prohibit it, or no useful task-related continuation exists. Necessary clarification, consent and approval still take precedence.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Ground each explanation in the supplied code and actual tool results. Distinguish existing behavior from a proposed change. Check any worked example against the current implementation. Do not invent requirements, missing-input behavior, failures or test results. Passing the supplied tests is not proof for every input. Apply the presentation instructions to the final user-facing answer, not tool arguments or necessary solution code.\nResponse extent: extended. Answer the user's actual request in 220-300 words of explanatory prose: direct answer, a grounded walkthrough of how the current or changed code behaves, one relevant worked example or edge case, and actual verification or its limits. Do not invent complexity to fill space; do not repeat yourself. Necessary code is outside the prose target. The prose target includes any continuation and excludes fenced code. Completeness, correctness, necessary caveats and explicit user requests override word targets. Conversation style changes only the closing sentence, not the requested explanatory depth."
+              },
+              "application": {
+                "unsolicited_update": "Queue independently eligible nonessential unsolicited updates until the application-defined delivery point or user request. Never defer requested answers, essential errors, safety notices, consent or approval requests. This instruction is for application delivery code, not the LLM."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "conversational",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "terse",
+              "conversation_style": "conversational",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "conversational",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "standard",
+              "conversation_style": "conversational",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "self_contained",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "conversational",
+              "unsolicited_update": "send"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "controls": {
+            "const": {
+              "response_extent": "full",
+              "conversation_style": "conversational",
+              "unsolicited_update": "defer"
+            }
+          },
+          "instructions": {
+            "properties": {
+              "version": {
+                "const": "coding-instructions.3"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "instructions": {
+            "const": {
+              "version": "coding-instructions.3",
+              "llm": {
+                "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+                "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+              },
+              "application": {
+                "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+              }
+            }
+          }
+        },
+        "type": "object"
+      }
+    }
+  ]
+}

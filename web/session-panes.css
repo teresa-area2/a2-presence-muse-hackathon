@@ -1,0 +1,67 @@
+/* Session content inside Claude's existing comparison shell. */
+.terminal-container { position: relative; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+main:has(#start:enabled) .terminal-container::after { content: none; }
+.session-feed { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 16px 18px; color: #e6edf3; font: 13px/1.55 var(--sans); scrollbar-width: thin; scrollbar-color: #46515c var(--terminal); }
+.session-feed:focus-visible { outline: 2px solid #aaa8ff; outline-offset: -2px; }
+.session-placeholder { margin: 0; color: #a6b0ba; }
+.session-entry { margin: 0 0 18px; }
+.session-entry-label { margin-bottom: 5px; color: #a9b5bf; font: 11px/1.4 var(--mono); }
+.session-entry-body { overflow-wrap: anywhere; }
+.session-entry-body > :first-child { margin-top: 0; }
+.session-entry-body > :last-child { margin-bottom: 0; }
+.session-entry-body p, .session-entry-body ul, .session-entry-body ol { margin: 8px 0; }
+.session-entry-body pre, .session-approval pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 8px 0; padding: 10px 12px; background: #17212c; border: 1px solid #33404c; border-radius: 8px; font: 12px/1.5 var(--mono); }
+.session-entry-body code { font-family: var(--mono); font-size: .94em; }
+.session-entry-body a { color: #bbb9ff; }
+.session-entry-body h3, .session-entry-body h4 { font-size: 15px; margin: 12px 0 6px; }
+/* Compact human decisions: exact targets remain readable and independently scrollable. */
+.session-approval { margin: 14px 0 8px; padding: 12px 14px; border: 1px solid #526071; border-radius: 9px; background: #202731; color: #e8edf4; }
+.session-approval > strong { display: block; color: #f0f3f8; font-size: 13px; font-weight: 650; }
+.session-approval > p { margin: 6px 0; color: #bbc6d2; font-size: 12px; line-height: 1.45; }
+.session-approval pre { max-height: 15em; overflow: auto; margin: 8px 0; padding: 9px 10px; border-color: #3c4959; background: #151c25; white-space: pre-wrap; overflow-wrap: anywhere; }
+.session-approval-choices { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 7px; margin-top: 10px; }
+.session-approval-option { flex: 0 1 auto; min-width: 0; }
+.session-approval-choices button { background: #303a48; color: #edf1f6; border-color: #647184; }
+.session-approval-choices button.session-approval-allow { background: #dce3ed; color: #18212e; border-color: #dce3ed; }
+.session-approval-choices button:hover:not(:disabled) { background: #f1f4f8; color: #17202b; border-color: #f1f4f8; }
+.session-approval-choices button:focus-visible { outline: 2px solid #bdbbff; outline-offset: 2px; }
+.session-approval-option p { margin: 4px 0; color: #bbc6d2; font-size: 11px; line-height: 1.4; }
+.session-approval-option pre { max-width: 100%; }
+.session-approval-details, .session-approval-feedback { margin-top: 9px; color: #b5c0cf; font-size: 12px; }
+.session-approval-details > summary, .session-approval-feedback > summary { cursor: pointer; width: fit-content; }
+.session-approval-details > summary:focus-visible, .session-approval-feedback > summary:focus-visible { outline: 2px solid #bdbbff; outline-offset: 3px; }
+.session-approval-feedback label { display: grid; gap: 6px; margin-top: 7px; }
+.session-approval-feedback textarea { width: 100%; box-sizing: border-box; min-height: 64px; padding: 9px 10px; border: 1px solid #647184; border-radius: 6px; background: #151c25; color: #edf1f6; font: inherit; resize: vertical; }
+.session-approval-feedback textarea:focus-visible { outline: 2px solid #bdbbff; outline-offset: 2px; }
+.session-held-host { flex: 0 0 auto; padding: 12px 14px 0; }
+.session-held-host:empty { display: none; }
+.session-held { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px; border: 1px solid #8a89db; border-radius: 10px; background: #20233b; color: #ecebff; }
+.session-held p { flex: 1 1 240px; margin: 0; font-size: 12px; line-height: 1.5; }
+.session-held button { background: #e6e5ff; border-color: #b5b3f0; color: #171837; }
+.session-held button:hover:not(:disabled) { background: #fff; border-color: #fff; color: #171837; }
+.terminal-pane[data-recipient-selected="true"] > .pane-heading { background: var(--indigo-pale); box-shadow: inset 0 2px var(--indigo); }
+.composer #send-shared { display: inline-grid; place-items: center; width: 38px; height: 38px; min-width: 38px; padding: 0; border-radius: 50%; flex: 0 0 38px; }
+#shared-send-controls { flex-wrap: wrap; }
+#shared-send-controls .segmented { flex-shrink: 0; }
+#shared-send-controls [data-target] { min-height: 34px; }
+.composer #target-label { min-width: 105px; }
+@media(max-width:600px) { .session-feed { padding: 14px; } }
+
+.comparison-model-control {display:flex;align-items:center;gap:6px;font:11px/1.3 var(--sans,system-ui);color:var(--muted,#68736e);white-space:nowrap;}
+.comparison-model-control select {font:inherit;color:var(--ink,#243035);background:var(--paper,#f7f4ec);border:1px solid var(--line,#c8ccc4);border-radius:7px;padding:7px 20px 7px 8px;max-width:130px;}
+.comparison-model-control select:disabled {opacity:.75;}
+
+.coding-task-control {display:flex;align-items:center;gap:6px;font:11px/1.3 var(--sans,system-ui);color:var(--muted,#68736e);white-space:nowrap;}
+.coding-task-control[hidden] {display:none;}
+.coding-task-control select {font:inherit;color:var(--ink,#243035);background:var(--paper,#f7f4ec);border:1px solid var(--line,#c8ccc4);border-radius:7px;padding:7px 20px 7px 8px;max-width:160px;}
+.coding-task-control select:disabled {opacity:.75;}
+
+/* The added task picker wraps with the existing controls on narrow screens. */
+.appbar-end {max-width:100%;flex-wrap:wrap;}
+
+/* Inert Markdown aids share the same rendering in both comparison arms. */
+.session-entry-body blockquote { margin: 10px 0; padding: 8px 12px; border-left: 3px solid #aaa8ff; background: rgba(170,168,255,.08); border-radius: 0 6px 6px 0; color: inherit; }
+.session-entry-body blockquote p { margin: 0; }
+.session-entry-body table { border-collapse: collapse; width: 100%; table-layout: fixed; margin: 10px 0; font-size: .94em; }
+.session-entry-body th, .session-entry-body td { border-bottom: 1px solid #33404c; padding: 7px 9px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.session-entry-body th { color: #cbcaff; font-weight: 600; }

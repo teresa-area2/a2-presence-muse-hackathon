@@ -1,0 +1,29 @@
+# Explicit API runs only. No model, OP, Cipher or user-login secrets are used.
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "api" && $A2_WINDOWS_QUALIFICATION == "1"'
+    - when: never
+
+stages: [qualification]
+
+windows-qualification:
+  stage: qualification
+  tags: [saas-windows-medium-amd64]
+  timeout: 10m
+  retry: 0
+  interruptible: true
+  variables:
+    GIT_STRATEGY: clone
+    GIT_DEPTH: "1"
+    GIT_SUBMODULE_STRATEGY: none
+    CI_DEBUG_TRACE: "false"
+    CI_DEBUG_SERVICES: "false"
+  script:
+    - powershell.exe -NoProfile -File scripts/ci/bootstrap-windows.ps1 -Mode "$A2_QUALIFICATION_MODE"
+  artifacts:
+    when: always
+    expire_in: 1 day
+    paths:
+      - qualification/bootstrap.json
+      - qualification/windows-native.json
+      - qualification/wsl-readiness.json

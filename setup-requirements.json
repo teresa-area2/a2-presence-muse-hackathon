@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "node": {
+    "required": ">=22.12.0 <23.0.0",
+    "purpose": "Run the bundled local interface, checksum preflight and verification. Cipher retains its separate locked npm install/build."
+  },
+  "python": {
+    "required": ">=3.11",
+    "purpose": "Run the pinned Lab budget helper and the existing Presence bridge. Complete preflight only checks the version string; it never starts the runtime or collector."
+  },
+  "components": [
+    {
+      "name": "agent-lab",
+      "pin": "ba8bf79073aae931e55fe6d1deb20f71d6a02b49",
+      "distribution": "optional legacy full checkout; canonical textbox mode uses the checked in-repo source subset",
+      "cleanliness": "exact pin with no changes (git status --porcelain must be empty)",
+      "interfaces": [
+        "core/muse-msp.mjs",
+        "core/muse-public-events.mjs",
+        "core/muse-presence-provenance.mjs",
+        "core/muse-harness-factory.mjs",
+        "agents/muse-warm-broker.mjs",
+        "host-adapters/muse_warm_broker.py",
+        "core/telemetry.mjs",
+        "presence.ts",
+        "repo-task.txt",
+        "host-adapters/muse_budget.py",
+        "tests/common-task-acceptance.mjs"
+      ]
+    },
+    {
+      "name": "presence-runtime",
+      "pin": "2183c6b75f6b11216f3a85b7268f46d8a2008c2f",
+      "distribution": "local-checkout-required; no public download is implied by this pin. Distribution rights and judge access remain open.",
+      "cleanliness": "exact pin; only docs/WORKSTATE.md documentation change by the runtime owner is permitted",
+      "allow_dirty": [
+        "docs/WORKSTATE.md"
+      ],
+      "interfaces": [
+        "presence-pa",
+        ".venv/bin/python"
+      ]
+    }
+  ],
+  "modes": {
+    "offline": {
+      "requires": [
+        "node"
+      ],
+      "description": "Repository-only mode. Requires Node only and makes no external calls (no git, no component reads, no provider/collector)."
+    },
+    "complete": {
+      "requires": [
+        "node",
+        "python",
+        "agent-lab",
+        "presence-runtime"
+      ],
+      "description": "Read-only metadata/source-pin/interface/tool validation. Never imports production readers, probes auth/state/provider/collector, clones, downloads, installs or starts the runtime."
+    }
+  },
+  "notes": [
+    "Preflight is read-only and side-effect free.",
+    "A local pin alone does not grant fresh-clone installation or judge access; remaining prerequisite access is documented in docs/SETUP.md.",
+    "Machine configuration (setup.json) stays ignored and is never exposed via the browser."
+  ]
+}

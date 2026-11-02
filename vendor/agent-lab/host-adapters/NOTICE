@@ -1,0 +1,11 @@
+Area2 agent host adapters
+Copyright 2026 Area2
+
+Licensed under Apache License, Version 2.0.
+Copied from the Area2-authorized a2-presence-muse integration.
+Contains workspace configuration helpers and instructions only, not the collector,
+Open Presence inference service, ARC full Presence service, or third-party agents.
+This license grants no API admission or trademark rights.
+
+Changes for Agent Lab: explicit runtime-root selection, portable launcher handling,
+and eligibility instructions reflecting the disabled default consumer age cutoff.

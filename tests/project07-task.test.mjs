@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {execFile} from 'node:child_process';import {promisify} from 'node:util';import fs from 'node:fs/promises';import os from 'node:os';import path from 'node:path';
+import {prepareCodingComparison} from '../scripts/prepare-coding-comparison.mjs';import {freezeProjectPlan} from '../src/project-task.mjs';import {runGit} from '../src/git-ops.mjs';
+const testEnvironment=module=>{const env={...process.env,TASK_MODULE:module};delete env.NODE_TEST_CONTEXT;return env;};
+const execute=promisify(execFile),root=path.resolve('.'),contract=path.join(root,'examples/conflict-task-board/tests/contract.test.mjs'),reference=path.join(root,'tests/fixtures/project07-reference.mjs');
+test('Muse reference passes all supplied behavioral contracts; unsafe baseline demonstrably fails semantic and latest-draft safety',async()=>{
+ const good=await execute(process.execPath,['--test','--test-reporter=tap',contract],{env:testEnvironment(reference),timeout:15000});assert.match(good.stdout,/# fail 0\b/);
+ let failure;try{await execute(process.execPath,['--test','--test-reporter=tap',contract],{env:testEnvironment(path.join(root,'examples/conflict-task-board/resolve-conflict.mjs')),timeout:15000});}catch(e){failure=e;}assert.equal(failure?.code,1);assert.match(failure.stdout,/not ok .*semantic overlap/);assert.match(failure.stdout,/not ok .*edit made while remote awaits/);assert.match(failure.stdout,/# fail [1-9]/);
+});
+test('preparation freezes only public unsolved task bytes; reference/private evidence never enter either arm',async t=>{
+ const temp=await fs.mkdtemp(path.join(os.tmpdir(),'project07-prepare-'));t.after(()=>fs.rm(temp,{recursive:true,force:true}));const result=await prepareCodingComparison({sourceRoot:root,localRoot:temp});assert.equal(result.reference_included,false);assert.equal(result.model_dispatched,false);
+ const profile=JSON.parse(await fs.readFile(result.profile,'utf8')),plan=await freezeProjectPlan({profile});assert.equal(plan.taskId,'PROJECT-07');assert.equal(plan.expectedPlanHash,result.verification_plan_hash);assert.equal(plan.taskPrompt,await fs.readFile('docs/tasks/PROJECT-07.md','utf8'));
+ const names=String(await runGit(['ls-tree','-r','--name-only','HEAD'],result.repository)).trim().split('\n').sort();assert.deepEqual(names,['AGENTS.md','README.md','TASK.md','resolve-conflict.mjs','tests/contract.test.mjs']);assert.equal(await fs.readFile(path.join(result.repository,'resolve-conflict.mjs'),'utf8'),await fs.readFile('examples/conflict-task-board/resolve-conflict.mjs','utf8'));assert.equal(String(await runGit(['status','--porcelain'],result.repository)).trim(),'');
+});

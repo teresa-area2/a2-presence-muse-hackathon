@@ -1,0 +1,25 @@
+// Plan/simulate are credential-free; native execution requires a reviewed digest.
+import fs from 'node:fs/promises';import path from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';import {compileEvidenceBatch} from '../src/evidence-batch-plan.mjs';import {executeEvidenceBatch,simulatedEvidenceAdapter,writeEvidenceJson} from '../src/evidence-batch-runner.mjs';import {EVIDENCE_APPROVAL_POLICY} from '../src/evidence-batch-approvals.mjs';import {EVIDENCE_USER_TURNS} from '../src/evidence-batch-native.mjs';
+const ROOT=fileURLToPath(new URL('../',import.meta.url)),sha=x=>createHash('sha256').update(x).digest('hex');
+import {EVIDENCE_WORKFLOW_POLICY} from '../src/evidence-coding-workflow.mjs';
+// Bind all selected engine, task, adapter and vendored dependency source bytes.
+// File hashes contain no source disclosure. Local evidence and credentials are excluded.
+const hashes=async()=>{
+ const names=execFileSync('git',['ls-files','-co','--exclude-standard','-z','--','src','scripts','vendor','coding-tasks','tests/fixtures/coding-instructions-3-matrix.json','components.json','dependencies.json'],{cwd:ROOT,encoding:'utf8'}).split('\0').filter(Boolean);
+ return Object.fromEntries(await Promise.all([...new Set(names)].sort().map(async name=>[name,sha(await fs.readFile(path.join(ROOT,name)))])));
+};
+export async function prepareEvidenceBatchManifest(spec){const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{cwd:ROOT,encoding:'utf8'}).trim();const plan=compileEvidenceBatch(spec,{sourceCommit});return{schema_version:1,kind:'presence_evidence_batch',plan,engine_source:await hashes(),user_turns:[...EVIDENCE_USER_TURNS],workflow_policy:EVIDENCE_WORKFLOW_POLICY,feedback_template:{module:'src/coding-ci-report.mjs',function:'buildCIFeedback',source:'own executed public/frozen CI counts, failed case names, artifact and plan hashes; no raw output or trusted test bodies'},approval_policy:EVIDENCE_APPROVAL_POLICY,execution:'not_started',resource_authority:'not_granted_by_preparation',normal_native_profile:'miniswe; contributor off; native questions, approvals and sandbox retained',provider_retries:0,evaluator_calls:0,op_calls:0,synthetic_policies_only:true,cleanup_grace_ms:10000};}
+export async function runEvidenceBatchCli(argv){
+ const [command,...rest]=argv,options={};for(let i=0;i<rest.length;i+=2){if(!/^--[a-z0-9-]+$/.test(rest[i])||!rest[i+1]||Object.hasOwn(options,rest[i]))throw Error('evidence_cli_arguments_invalid');options[rest[i]]=rest[i+1];}
+ if(command==='plan'){
+  if(Object.keys(options).some(k=>!['--spec','--out'].includes(k))||!options['--spec']||!options['--out'])throw Error('evidence_cli_arguments_invalid');const manifest=await prepareEvidenceBatchManifest(JSON.parse(await fs.readFile(path.resolve(options['--spec']),'utf8')));const file=path.resolve(options['--out']);await fs.mkdir(path.dirname(file),{recursive:true,mode:0o700});await fs.writeFile(file,JSON.stringify(manifest,null,2)+'\n',{mode:0o600,flag:'wx'});console.log(JSON.stringify({manifest:file,sha256:sha(await fs.readFile(file)),pairs:manifest.plan.cells.length,reserved_generation_ceiling:manifest.plan.limits.allocated_generations,dispatched:false}));return;
+ }
+ if(!['simulate','run'].includes(command)||Object.keys(options).some(k=>!['--manifest','--out','--approved-manifest-sha256'].includes(k))||!options['--manifest']||!options['--out'])throw Error('evidence_cli_arguments_invalid');
+ const body=await fs.readFile(path.resolve(options['--manifest'])),manifest=JSON.parse(body);if(manifest.kind!=='presence_evidence_batch'||manifest.execution!=='not_started')throw Error('evidence_manifest_invalid');
+ const expected=await prepareEvidenceBatchManifest(manifest.plan.spec);if(JSON.stringify(expected)!==JSON.stringify(manifest))throw Error('evidence_manifest_or_source_changed');
+ if(command==='run'&&options['--approved-manifest-sha256']!==sha(body))throw Error('evidence_batch_not_authorized');
+ const output=path.resolve(options['--out']);await fs.mkdir(path.dirname(output),{recursive:true,mode:0o700});const adapter=command==='simulate'?simulatedEvidenceAdapter():(await import('../src/evidence-batch-native.mjs')).nativeEvidenceAdapter();
+ const abort=new AbortController(),stop=()=>abort.abort();process.once('SIGINT',stop);process.once('SIGTERM',stop);
+ try{const summary=await executeEvidenceBatch({plan:manifest.plan,outputDirectory:output,adapter,execution:command==='run'?'native':'simulation',authorizedPlanId:command==='run'?manifest.plan.plan_id:null,preparedManifest:manifest,signal:abort.signal});console.log(JSON.stringify({report:path.join(output,'REPORT.md'),summary}));return summary;}finally{process.off('SIGINT',stop);process.off('SIGTERM',stop);}
+}
+if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))runEvidenceBatchCli(process.argv.slice(2)).catch(e=>{process.stderr.write((/^[a-z0-9_]{1,100}$/.test(e.message??'')?e.message:'evidence_batch_command_failed')+'\n');process.exitCode=1;});

@@ -1,0 +1,63 @@
+/setup.json
+/.local/
+/integrations/cipher-textbox/node_modules/
+
+# Local environment, package authentication and service credentials.
+.env
+.env.*
+.npmrc
+.npmrc.*
+*.npmrc
+*.npmrc.*
+.pypirc
+.netrc
+muse-hackathon-presence.json
+auth.json
+tokens.json
+*credentials*.json
+*credentials*.yaml
+*credentials*.yml
+*credentials*.toml
+*secrets*.json
+*secrets*.yaml
+*secrets*.yml
+*secrets*.toml
+credentials/
+secrets/
+
+# Sanitized examples remain trackable; never put real values in templates.
+!*.example
+!*.sample
+!*.template
+!*.example.json
+!*.example.yaml
+!*.example.yml
+!*.example.toml
+!*.sample.json
+!*.sample.yaml
+!*.sample.yml
+!*.sample.toml
+!*.template.json
+!*.template.yaml
+!*.template.yml
+!*.template.toml
+
+# Private keys and certificate bundles.
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Development-only files and generated artifacts.
+/node_modules/
+.DS_Store
+/work/
+/agent-workspaces/
+/Claude outputs/
+*.log
+
+# Local coordination handoffs and generated exports.
+/docs/handoffs/
+/outputs/

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Open Presence × Muse terminals</title>
+  <link rel="stylesheet" href="/xterm.css">
+  <link rel="stylesheet" href="/lab/pulse.css">
+  <link rel="stylesheet" href="/terminal-panes.css">
+  <link rel="stylesheet" href="/terminal-task-card.css">
+  <link rel="stylesheet" href="/terminal-app.css">
+  <script src="/xterm.js"></script>
+  <script src="/fit.js"></script>
+  <script type="module" src="/terminal-app.mjs"></script>
+  <script type="module" src="/terminal-shell.mjs"></script>
+</head>
+<body>
+<main class="app">
+  <header class="appbar">
+    <h1 class="brand">Open Presence <span aria-hidden="true">×</span><span class="sr-only">and</span> Muse</h1>
+    <div id="task-brief" class="task-brief"></div>
+    <p id="fixture-banner" class="fixture-chip" title="OFFLINE FIXTURE · synthetic echo, no real Presence or model calls" hidden>OFFLINE FIXTURE · synthetic echo, no real Presence or model calls</p>
+    <div class="appbar-end">
+      <span class="session-timer" id="session-timer" title="Time since this page saw both terminals become interactive. Resets on reload." hidden>00:00</span>
+      <button id="present" type="button" class="ghost" aria-pressed="false" title="Presenter mode: full screen, secondary panels hidden">Present</button>
+      <button id="reconnect" type="button" class="secondary" hidden>Reconnect</button>
+      <button id="stop" type="button" class="secondary" disabled>Stop</button>
+      <button id="start" type="button">Open terminals</button>
+    </div>
+  </header>
+  <p id="fault" class="fault-bar" role="alert" hidden></p>
+
+  <div class="workspace">
+    <section class="pair" aria-label="Two interactive terminals">
+      <article class="terminal-pane baseline-pane">
+        <div class="pane-heading">
+          <h2>Without Presence</h2>
+          <span class="pane-state" id="state-without">Not started</span>
+          <span class="typing-chip" aria-hidden="true">Typing</span>
+          <kbd class="pane-key" title="Focus this terminal">⌥1</kbd>
+          <button id="focus-without" class="terminal-focus" type="button" aria-label="Type in Without Presence terminal (Option 1)" disabled>Type here</button>
+        </div>
+        <div class="baseline-inline">
+          <div class="baseline-copy">
+            <span class="arm-tag">BASELINE</span>
+            <strong>Standard collaboration</strong>
+            <span>No Presence guidance is sent to this agent.</span>
+          </div>
+          <div class="presence-policy policy-none" aria-hidden="true"></div>
+          <span hidden><small>Muse default behavior</small></span>
+        </div>
+        <div class="terminal-container" data-terminal-arm="without" aria-label="Without Presence interactive terminal"></div>
+      </article>
+      <article class="terminal-pane presence-pane">
+        <div class="pane-heading">
+          <h2>With Presence</h2>
+          <span class="pane-state" id="state-with">Not started</span>
+          <span class="typing-chip" aria-hidden="true">Typing</span>
+          <kbd class="pane-key" title="Focus this terminal">⌥2</kbd>
+          <button id="focus-with" class="terminal-focus" type="button" aria-label="Type in With Presence terminal (Option 2)" disabled>Type here</button>
+        </div>
+        <div class="presence-inline">
+          <div class="presence-context">
+            <div class="presence-explanation">
+              <span class="arm-tag">PRESENCE</span>
+              <strong>Adaptive collaboration</strong>
+              <span class="presence-description">Presence guidance shapes how this agent collaborates.</span>
+            </div>
+            <div class="presence-monitor">
+              <div id="presence-pulse" data-available="false" aria-label="No current Presence guidance"><div class="pulse-art" aria-hidden="true"></div></div>
+              <div class="presence-inline-copy">
+                <strong class="sr-only">Presence connection</strong>
+                <div id="presence-refresh" class="presence-refresh" role="progressbar" aria-label="OP refresh availability" aria-valuemin="0" aria-valuemax="100" hidden><i id="presence-refresh-fill"></i></div>
+                <span id="presence-inline-status">Awaiting a reading</span>
+                <span id="presence-recency" class="presence-recency" hidden></span>
+                <small id="presence-inline-policy" hidden>Policy: waiting for guidance</small>
+              </div>
+            </div>
+          </div>
+          <div class="presence-policy">
+            <strong id="presence-policy-caption">Source policy</strong>
+            <dl>
+              <div class="policy-row" data-policy="depth"><dt>Depth</dt><dd class="policy-bar" aria-hidden="true"><i></i><i></i><i></i></dd><dd id="presence-policy-depth">—</dd></div>
+              <div class="policy-row" data-policy="updates"><dt>Updates</dt><dd class="policy-bar" aria-hidden="true"><i></i><i></i></dd><dd id="presence-policy-updates">—</dd></div>
+              <div class="policy-row" data-policy="conversation"><dt>Conversation</dt><dd class="policy-bar" aria-hidden="true"><i></i><i></i></dd><dd id="presence-policy-conversation">—</dd></div>
+            </dl>
+            <small id="policy-last" class="policy-last">No policy changes yet</small>
+            <small>Delivery to Muse not verified</small>
+          </div>
+        </div>
+        <div class="terminal-container" data-terminal-arm="with" aria-label="With Presence interactive terminal"></div>
+      </article>
+    </section>
+
+    <section class="conversation" aria-label="Message the Muse agents">
+      <div class="composer">
+        <label for="shared" class="sr-only">Message</label>
+        <textarea id="shared" rows="2"></textarea>
+        <div class="composer-toolbar">
+          <div class="composer-status"><span id="send-status" role="status"></span><span id="copy-status" role="status"></span></div>
+          <div class="composer-actions">
+            <button type="button" class="ghost" id="copy">Copy</button>
+            <span id="shared-send-controls">
+              <span class="target-label" id="target-label">To</span>
+              <input type="hidden" id="target" value="both">
+              <span class="segmented" role="group" aria-labelledby="target-label">
+                <button type="button" data-target="without" aria-pressed="false">Without</button>
+                <button type="button" data-target="with" aria-pressed="false">With</button>
+                <button type="button" data-target="both" aria-pressed="true">Both</button>
+              </span>
+              <button type="button" id="send-shared" disabled>Send</button>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="composer-foot">
+        <p id="mode-note" class="mode-note" role="status">Connecting to the local terminal service…</p>
+        <p class="composer-hint">Approvals are never answered from here. Handle them in each terminal.</p>
+      </div>
+    </section>
+
+    <section class="results" aria-labelledby="results-heading">
+      <div class="results-head">
+        <h2 id="results-heading" class="eyebrow">RESULTS</h2>
+        <span class="legend"><i class="k-without"></i>Without <i class="k-with"></i>With</span>
+      </div>
+      <span id="about-heading" class="sr-only">Model usage guide: focus a metric label for its definition.</span>
+      <dl class="result-metrics" aria-describedby="about-heading">
+        <div><dt><button type="button" class="metric-help" aria-describedby="usage-help-calls">Model calls</button></dt><dd><span class="v-without" id="usage-calls-without">—</span><span class="v-with" id="usage-calls-with">—</span></dd></div>
+        <div><dt><button type="button" class="metric-help" aria-describedby="usage-help-input">Input tokens</button></dt><dd><span class="v-without" id="usage-input-without">—</span><span class="v-with" id="usage-input-with">—</span></dd></div>
+        <div><dt><button type="button" class="metric-help" aria-describedby="usage-help-output">Output tokens</button></dt><dd><span class="v-without" id="usage-output-without">—</span><span class="v-with" id="usage-output-with">—</span></dd></div>
+        <div><dt><button type="button" class="metric-help" aria-describedby="usage-help-cache">Cached input</button></dt><dd><span class="v-without" id="usage-cache-without">—</span><span class="v-with" id="usage-cache-with">—</span></dd></div>
+      </dl>
+      <div class="metric-definitions" aria-labelledby="about-heading">
+        <span id="usage-help-calls" class="metric-tooltip" role="tooltip">Completed model responses with reported usage across this session. Includes tool-use steps. In-flight and unreported calls are excluded.</span>
+        <span id="usage-help-input" class="metric-tooltip" role="tooltip">Total prompt and context tokens across this session, including cached input and context sent again.</span>
+        <span id="usage-help-output" class="metric-tooltip" role="tooltip">Tokens generated across this session, including reasoning and code/tool arguments.</span>
+        <span id="usage-help-cache" class="metric-tooltip" role="tooltip">Input reused from cache. Already included in input tokens.</span>
+      </div>
+      <div class="rating" role="group" aria-labelledby="rating-heading">
+        <span id="rating-heading" class="rating-title">How did it feel?</span>
+        <div class="rate" data-arm="without" role="group" aria-label="Your rating for Without Presence, 1 to 5"><span class="rate-label">Without</span><button type="button" data-score="1" aria-pressed="false">1</button><button type="button" data-score="2" aria-pressed="false">2</button><button type="button" data-score="3" aria-pressed="false">3</button><button type="button" data-score="4" aria-pressed="false">4</button><button type="button" data-score="5" aria-pressed="false">5</button></div>
+        <div class="rate" data-arm="with" role="group" aria-label="Your rating for With Presence, 1 to 5"><span class="rate-label">With</span><button type="button" data-score="1" aria-pressed="false">1</button><button type="button" data-score="2" aria-pressed="false">2</button><button type="button" data-score="3" aria-pressed="false">3</button><button type="button" data-score="4" aria-pressed="false">4</button><button type="button" data-score="5" aria-pressed="false">5</button></div>
+        <small class="rating-note">This page only · not saved</small>
+      </div>
+    </section>
+  </div>
+
+  <div class="more">
+    <section class="card policy-changes" aria-labelledby="policy-changes-heading">
+      <div class="pc-head">
+        <div class="pc-title">
+          <h2 id="policy-changes-heading" class="eyebrow">PULSE OVER THIS SESSION</h2>
+        </div>
+        <button id="pulse-replay" type="button" class="pv-replay" aria-pressed="false" aria-label="Play the session back" title="Play the session back" disabled><svg class="pv-icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z" fill="currentColor"/></svg><svg class="pv-icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="3.5" width="2.8" height="9" rx="1" fill="currentColor"/><rect x="9.2" y="3.5" width="2.8" height="9" rx="1" fill="currentColor"/></svg><span class="pv-label-play">Play</span><span class="pv-label-pause">Pause</span></button>
+      </div>
+      <div class="pv">
+        <div class="pv-stage">
+          <div id="pulse-view" class="pv-art" data-available="false" role="img" aria-label="No current Presence guidance"></div>
+          <div id="pulse-view-policy" class="pv-policy-card" aria-labelledby="pulse-view-policy-title">
+            <strong id="pulse-view-policy-title">No current policy</strong>
+            <dl>
+              <div class="pv-policy-row" data-field="response_extent"><dt>Depth</dt><dd class="policy-bar" aria-hidden="true"><i></i><i></i><i></i></dd><dd id="pulse-policy-depth">—</dd></div>
+              <div class="pv-policy-row" data-field="unsolicited_update"><dt>Updates</dt><dd class="policy-bar" aria-hidden="true"><i></i><i></i></dd><dd id="pulse-policy-updates">—</dd></div>
+              <div class="pv-policy-row" data-field="conversation_style"><dt>Conversation</dt><dd class="policy-bar" aria-hidden="true"><i></i><i></i></dd><dd id="pulse-policy-conversation">—</dd></div>
+            </dl>
+            <p id="pulse-view-caption" class="pv-caption">Ordinary fallback</p>
+          </div>
+        </div>
+        <div class="pv-list">
+          <div class="pv-cols" aria-hidden="true"><span>Time</span><span>Depth</span><span>Updates</span><span>Conversation</span></div>
+          <ol id="policy-history" class="policy-history" aria-label="Policy changes with times"><li class="empty">No policy observed yet.</li></ol>
+        </div>
+      </div>
+      <p id="policy-latest" class="pc-latest">No policy observed yet.</p>
+    </section>
+    <details id="testing-diagnostics" class="card secondary-utilities">
+      <summary>Testing and diagnostics</summary>
+      <div class="utilities-content">
+        <p id="usage-note" class="footnote usage-note" role="status">No usage reported yet.</p>
+        <div id="session-utilities"></div>
+        <details class="presence-summary card" aria-labelledby="presence-heading">
+          <summary id="presence-heading">Presence details</summary>
+          <div class="presence-diagnostics">
+            <p id="presence-connection-detail">Awaiting a reading</p>
+            <p id="presence-help">Waiting for a confirmed capture status.</p>
+          </div>
+          <div class="presence-facts">
+            <div><span>CAPTURE</span><strong id="presence-capture">Unavailable</strong></div>
+            <div><span>GUIDANCE</span><strong id="presence-reading">Not read</strong><small id="presence-receipt">No receipt</small></div>
+            <div><span>COLLABORATION SETTINGS</span><strong id="presence-policy">Ordinary behavior</strong><small id="presence-change">No receipt to compare</small></div>
+            <div><span>LOCAL HOOK LOG</span><strong id="presence-hook">No verified hook evidence</strong></div>
+          </div>
+          <section class="capture-events" id="presence-window-audit" aria-label="Typing and buffer events">
+            <div class="capture-events-heading"><h3>Typing and buffer</h3><span data-window-summary role="status">This tab</span></div>
+            <div class="capture-events-scroll"><table><thead><tr><th>Time</th><th>Window</th><th>Event</th><th>Result</th></tr></thead><tbody data-window-events></tbody></table></div>
+          </section>
+        </details>
+      </div>
+    </details>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{
+  "version": "1.0.4-draft",
+  "runtime": "Node.js 20+",
+  "tasks": [
+    {
+      "id": "save-conflicts",
+      "title": "Preserve a user edit during a save conflict",
+      "category": "bug fix",
+      "agent_snapshot": "tasks/save-conflicts/project",
+      "facilitator_guide": "tasks/save-conflicts/FACILITATOR.md",
+      "acceptance": "tasks/save-conflicts/checks/acceptance.test.mjs",
+      "supplemental_acceptance": "tasks/save-conflicts/checks/edge-cases.test.mjs"
+    },
+    {
+      "id": "booking-rules",
+      "title": "Handle a policy change in event reservations",
+      "category": "changing requirements",
+      "agent_snapshot": "tasks/booking-rules/project",
+      "facilitator_guide": "tasks/booking-rules/FACILITATOR.md",
+      "acceptance": "tasks/booking-rules/checks/acceptance.test.mjs"
+    },
+    {
+      "id": "batch-import",
+      "title": "Review and repair a partial batch import",
+      "category": "review revision",
+      "agent_snapshot": "tasks/batch-import/project",
+      "facilitator_guide": "tasks/batch-import/FACILITATOR.md",
+      "acceptance": "tasks/batch-import/checks/acceptance.test.mjs"
+    },
+    {
+      "id": "notification-routing",
+      "title": "Refactor notification routing safely",
+      "category": "safe refactor",
+      "agent_snapshot": "tasks/notification-routing/project",
+      "facilitator_guide": "tasks/notification-routing/FACILITATOR.md",
+      "acceptance": "tasks/notification-routing/checks/acceptance.test.mjs"
+    },
+    {
+      "id": "shared-expenses",
+      "title": "Split a shared trip bill",
+      "category": "feature implementation",
+      "agent_snapshot": "tasks/shared-expenses/project",
+      "facilitator_guide": "tasks/shared-expenses/FACILITATOR.md",
+      "acceptance": "tasks/shared-expenses/checks/acceptance.test.mjs"
+    }
+  ]
+}

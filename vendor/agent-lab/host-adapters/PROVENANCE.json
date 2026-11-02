@@ -1,0 +1,33 @@
+{
+  "source_repository": "a2-presence-muse",
+  "source_head": "8764b4d7a7afd584dbdc7687d7c26bdda66563f2",
+  "date": "2026-10-24",
+  "files": [
+    {
+      "file": "configure.py",
+      "source_sha256": "5924062f4d152a30bbc14e8bbabbf18c2b7ac3cba9b6f165a7379ca83649654b",
+      "sha256": "8bb8932c45975b46094676cd432aa617f78f83e049d23490dc24ab5d6e625746"
+    },
+    {
+      "file": "run_muse.py",
+      "source_sha256": "33e7940d7e6bed4e8539369300f7ef29cffec059e4995c7e373b402dc51ccf1d",
+      "sha256": "fce7cafc68668d1c5a873f07edaac4299e21ca9d55252fce46473c592a31a3ff"
+    },
+    {
+      "file": "opencode_route.py",
+      "source_sha256": "aa60950e79c43cdf0ae349eac5f6948313baab04c963a87c9ef500f3ceb2b4c7",
+      "sha256": "aa60950e79c43cdf0ae349eac5f6948313baab04c963a87c9ef500f3ceb2b4c7"
+    },
+    {
+      "file": "INSTRUCTIONS.txt",
+      "source_sha256": "f312c25dc58f640a73cccdf0a5443f320d4816e19b74abdb056691131bd2ae2b",
+      "sha256": "7dfb6915e6472e024e884ec461ca66fff9e557546143ea4a132f2366d2b465eb"
+    }
+  ],
+  "changes": [
+    "Explicit --launcher or Open Presence component root instead of implicit runtime sibling",
+    "No default consumer age cutoff; retain real eligibility/age and ordinary fallback",
+    "Apache-2.0 helper scope only; no inference/ARC full service/source redistribution implied",
+    "M0: isolated private Muse approval config and ephemeral per-run capability before forwarded native arguments; no authentication copy or shared settings write"
+  ]
+}

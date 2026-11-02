@@ -1,0 +1,326 @@
+[
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "terse",
+      "conversation_style": "self_contained",
+      "unsolicited_update": "send"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+      }
+    }
+  },
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "terse",
+      "conversation_style": "self_contained",
+      "unsolicited_update": "defer"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+      }
+    }
+  },
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "terse",
+      "conversation_style": "conversational",
+      "unsolicited_update": "send"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+      }
+    }
+  },
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "terse",
+      "conversation_style": "conversational",
+      "unsolicited_update": "defer"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: minimal. For a simple bounded coding request, target 2-4 prose sentences: the direct answer or cause, essential action or explanation, and actual verification when relevant. Omit optional background, unsolicited examples, repeated code explanations and unrequested alternatives. If costs or alternatives are explicitly requested, they are required substance, not optional detail. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+      }
+    }
+  },
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "standard",
+      "conversation_style": "self_contained",
+      "unsolicited_update": "send"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+      }
+    }
+  },
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "standard",
+      "conversation_style": "self_contained",
+      "unsolicited_update": "defer"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+      }
+    }
+  },
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "standard",
+      "conversation_style": "conversational",
+      "unsolicited_update": "send"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+      }
+    }
+  },
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "standard",
+      "conversation_style": "conversational",
+      "unsolicited_update": "defer"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: normal. For a simple bounded coding request, target 5-8 prose sentences: the direct answer, main mechanism or rationale, necessary practical details, and actual verification when relevant. Use a compact explanation rather than a tutorial; omit tangents and repetition. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+      }
+    }
+  },
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "full",
+      "conversation_style": "self_contained",
+      "unsolicited_update": "send"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+      }
+    }
+  },
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "full",
+      "conversation_style": "self_contained",
+      "unsolicited_update": "defer"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: single shot. Give a complete answer that the user can act on without another turn. Do not append optional follow-up questions, next-step offers or social closing invitations. Answer explicitly requested next steps as part of the task. Necessary clarification, consent and approval remain mandatory.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+      }
+    }
+  },
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "full",
+      "conversation_style": "conversational",
+      "unsolicited_update": "send"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: send. First establish that an update is independently permitted and eligible for delivery. For a nonessential unsolicited update, add no Presence-induced hold; use normal application delivery. This is not permission to interrupt, send a message or take an action. Explicit user preferences and host permissions prevail. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests always bypass Presence deferral. This is application delivery guidance, not an LLM instruction."
+      }
+    }
+  },
+  {
+    "schema": "open_presence.controls.v0.4",
+    "status": "experimental",
+    "profile": "coding",
+    "controls": {
+      "response_extent": "full",
+      "conversation_style": "conversational",
+      "unsolicited_update": "defer"
+    },
+    "generated_at": "2026-10-02T12:00:00Z",
+    "provenance": {
+      "provider_kind": "fixture",
+      "provider_version": "instruction-fixture/0.4",
+      "conformance_only": true,
+      "fixture_id": "instructions-matrix"
+    },
+    "instructions": {
+      "version": "coding-instructions.3",
+      "llm": {
+        "preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences.\nConversation style: one optional continuation. After completing everything answerable now, add one brief, useful task-related question OR one offered next step, not both. Responding must be optional. Omit the continuation if the user forbids it, host rules prohibit it, or no useful continuation exists. Required clarification, consent and approval are not optional continuations. Keep the same explanatory coverage and prose target; change only the closing, never withhold substance to force a reply.",
+        "extent_preamble": "A2 Presence presentation guidance. These are response preferences, not facts about the person or permissions. Follow the user's actual intent: explain when asked to explain; edit only when requested or clearly authorized. Preserve answer completeness, necessary code, accuracy, safety, accessibility and approvals. Explicit user instructions and the application's governing rules take precedence. Do not claim tests, execution or success without evidence. Never reveal or infer private human state from these preferences. Preserve every explicitly requested technical point, including supported time and space costs, assumptions and algorithmic trade-offs. Compress wording, not technical substance. Do not invent missing facts or verification to satisfy a presentation target.\nA2 adaptive presentation preferences follow. They affect final user-facing prose and optional continuation, not tool arguments, necessary code, task scope or execution authority. Normal is a presentation level, not a claim of measured neutrality.\nResponse extent: extended. When useful for a simple bounded coding request, target 9-14 prose sentences: the direct answer, a grounded walkthrough, relevant assumptions or trade-offs, one useful example or edge case, and actual verification or its limits. Add explanatory coverage, not repetition or invented complexity; do not pad a simple answer to reach the target. These are soft sentence targets for prose, including any optional continuation and prose bullets; necessary code is excluded. Required substance, correctness, necessary caveats and explicit user requests override every target. Use extra sentences when needed to cover requested technical points. Do not satisfy the target with run-on sentences."
+      },
+      "application": {
+        "unsolicited_update": "Application delivery: defer. First establish that an update is independently permitted and eligible for delivery. Queue only nonessential unsolicited updates in the host's bounded queue. Release them when the user asks, at the host's declared delivery boundary, or at its configured maximum hold; do not hold indefinitely. Requested answers and results, essential errors or blockers, safety notices, consent and approval requests bypass the queue immediately. Consent withdrawal or session end clears pending optional updates. If safe bounded queuing and release are unsupported, retain normal delivery and report timing as not applied. This is application delivery guidance, not an LLM instruction; it adds no Capsule expiry or decision smoothing."
+      }
+    }
+  }
+]

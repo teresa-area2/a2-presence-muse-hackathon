@@ -1,0 +1,81 @@
+import {EventEmitter} from 'node:events';
+import {createHash} from 'node:crypto';
+import {isDeepStrictEqual} from 'node:util';
+import {modelEvidence} from './comparison-model.mjs';
+import {StructuredArm} from './structured-arm.mjs';
+import {SharedSubmission} from './shared-submission.mjs';
+import {approvalView} from './approval-view.mjs';
+const names=['without','with'];
+export async function confirmOwnedExit(client){
+ if(client.ownsProcessGroup!==true)return true;const child=client.child,pid=child?.pid;if(!Number.isSafeInteger(pid)||pid<=1)return false;
+ const until=Date.now()+2000;while(Date.now()<until){let groupGone=false;try{process.kill(-pid,0);}catch(e){if(e.code==='ESRCH')groupGone=true;else return false;}if(groupGone&&(child.exitCode!==null||child.signalCode!==null))return true;await new Promise(r=>setTimeout(r,50));}return false;
+}
+const ref=x=>typeof x==='string'&&/^[A-Za-z0-9_.:-]{1,160}$/.test(x);
+// Keep only a digest of the reviewed native material, never its command or args.
+function pendingSignature(p,requirement){try{const i=requirement?.sourceIndex,s=p?.subject;if(s?.kind!=='shell'||!Number.isSafeInteger(i)||i<0||!Array.isArray(s.stages)||!s.stages[i]||!isDeepStrictEqual(s.stages[i].requirementId,requirement))return null;const stages=s.stages.map((stage,index)=>{if(index!==i)return stage;const {resolution,...rest}=stage;return rest;});const material={subject:{...s,stages},rawArgs:p.rawArgs,toolName:p.toolName,itemId:p.itemId,toolCallId:p.toolCallId,protectedWrite:p.protectedWrite,subagentOrigin:p.subagentOrigin};const ordered=x=>Array.isArray(x)?x.map(ordered):x&&typeof x==='object'?Object.fromEntries(Object.keys(x).sort().map(k=>[k,ordered(x[k])])):x;return createHash('sha256').update(JSON.stringify(ordered(material))).digest('hex');}catch{return null;}}
+function confirmedPendingTransition(p,pending,sessionId,turnId){if(!pending?.signature||!turnId||pending.turnId!==turnId||p?.sessionId!==sessionId||p.turnId!==turnId||p.approvalId!==pending.approvalId||!isDeepStrictEqual(p.currentRequirementId,pending.requirementId)||p.change?.kind!=='stageResolved'||!isDeepStrictEqual(p.change.requirementId,pending.requirementId))return false;const stage=p.subject?.stages?.[pending.requirementId.sourceIndex];if(!isDeepStrictEqual(stage?.requirementId,pending.requirementId)||!['knownSafe','policyAllow','allowOnce','policyAmendment'].includes(stage?.resolution?.kind))return false;return pendingSignature(p,pending.requirementId)===pending.signature;}
+
+// Owns exactly two previously-qualified memory-only sessions. All failures
+// revoke dispatch and stop both owned clients; no prompts or histories persist.
+export class StructuredPair extends EventEmitter{
+ constructor({sessions,makeId,cleanup=async()=>{},confirmExit=confirmOwnedExit,nativeQuestions=false,now=()=>performance.now()}){
+  super();if(!sessions||typeof makeId!=='function'||typeof cleanup!=='function'||typeof confirmExit!=='function'||typeof now!=='function'||typeof nativeQuestions!=='boolean'||names.some(n=>!sessions[n]?.client||!sessions[n]?.ledger||!sessions[n]?.usage))throw Error('structured_pair_invalid');
+  this.makeId=makeId;this.actionBusy=false;this.state='ready';this.error=null;this.comparisonMatched=true;this.stopPromise=null;this.arms={};this.cleanup=cleanup;this.confirmExit=confirmExit;this.approvalPending=Object.fromEntries(names.map(n=>[n,new Map()]));this.approvalDiagnostics=Object.fromEntries(names.map(n=>[n,{events:[],events_omitted:0,seen:new Map()}]));
+  for(const name of names){const {client,ledger,usage,workspace,delivery,requestedModel}=sessions[name];const arm=new StructuredArm({client,ledger,usage,workspace,delivery,requestedModel,arm:name,nativeQuestions,now,onChange:()=>{if(this.arms[name]?.events.some(e=>e.type==='human_message'&&e.payload?.message_phase==='question_reply'))this.comparisonMatched=false;this.emit('status',this.snapshot());},onFatal:()=>void this.fail('session_failed')});this.arms[name]=arm;client.on('notification',e=>{const old=client.approvals.get(e?.params?.approvalId),turn=arm.turnId;arm.incoming(e);if(arm.state!=='failed'&&e?.params?.sessionId===client.sessionId){let cleared=false;const pending=this.approvalPending[name].get(e?.params?.approvalId),updated=client.approvals.get(e?.params?.approvalId);if(e.method==='approval/updated'&&old&&updated&&pending&&e.params.change?.kind==='stageResolved'&&isDeepStrictEqual(e.params.change.requirementId,pending.requirementId)&&!isDeepStrictEqual(updated.currentRequirementId,pending.requirementId)||e.method==='approval/resolved'&&old&&!updated)cleared=this.approvalPending[name].delete(e.params.approvalId);else if(e.method==='turn/completed'&&e.params.turnId===turn&&['completed','cancelled'].includes(e.params.terminal))for(const [id,pending] of this.approvalPending[name])if(pending.turnId===turn)cleared=this.approvalPending[name].delete(id)||cleared;if(cleared)try{this.emit('status',this.snapshot());}catch{}}});client.on('request',e=>arm.incoming(e,true));client.on('closed',()=>{if(this.state!=='closed'&&this.state!=='stopping')void this.fail('session_closed');});}
+  const dispatch=Object.fromEntries(names.map(name=>{const arm=this.arms[name];return [name,{sessionId:arm.client.sessionId,ready:()=>arm.ready(),activeTurn:()=>arm.activeTurn(),prepare:()=>arm.prepare(),bindTurn:id=>arm.bindTurn(id),request:(method,p)=>arm.requestTurn(method,p)}];}));
+  this.dispatch=new SharedSubmission({arms:dispatch,makeId,onPartial:()=>this.fail('partial_dispatch'),isAdmitted:()=>this.state==='ready'});
+ }
+ async submit(text,target='both',options={}){
+  if(this.state!=='ready'||this.actionBusy||this.dispatch.busy||this.dispatch.locked)throw Error('pair_not_ready');
+  let plan;try{plan=this.dispatch.preflight(text,target,options);}catch(e){if(e.message==='shared_sessions_not_ready')throw Error('pair_not_ready');throw e;}const selected=Object.keys(plan);
+  if(selected.some(n=>this.arms[n].events.length+this.arms[n].questionReserve()>=512)){await this.fail('event_capacity');throw Error('event_capacity');}
+  for(const name of selected)if(plan[name].mode==='start')this.arms[name].delivery?.begin(text);
+  if(target!=='both')this.comparisonMatched=false;
+  const rows=Object.fromEntries(selected.map(n=>{const e={type:'human_message',payload:{text,message_phase:'attempted',submission_target:target}};this.arms[n].events.push(e);return[n,e];}));
+  try{this.emit('status',this.snapshot());}catch{}
+  try{const result=await this.dispatch.submit(text,target,options);for(const n of selected)rows[n].payload.message_phase=result.arms[n]?.status==='steered'?'steered':result.arms[n]?.status==='started'?'sent':result.arms[n]?.status==='not_started'?'not_sent':'unconfirmed';if(!['started','forwarded'].includes(result.status))this.comparisonMatched=false;return result;}catch(e){for(const row of Object.values(rows))row.payload.message_phase='not_sent';throw e;}finally{try{this.emit('status',this.snapshot());}catch{}}
+ }
+ async interrupt(target='both',options={}){
+  if(this.state!=='ready'||this.actionBusy||this.dispatch.busy||this.dispatch.locked)throw Error('pair_not_ready');
+  if(!options||!Object.hasOwn(options,'expectedTurns'))throw Error('turn_action_invalid');const plan=this.dispatch.preflight('Interrupt current turn',target,options),selected=Object.keys(plan);if(!selected.some(n=>plan[n].mode==='steer'))throw Error('pair_not_ready');const commands=Object.fromEntries(selected.map(n=>{const id=plan[n].mode==='steer'?this.makeId():null;if(id!==null&&!ref(id))throw Error('turn_action_invalid');return[n,id];}));this.actionBusy=true;
+  try{const outcomes=await Promise.all(selected.map(async n=>{if(plan[n].mode==='start')return{status:'not_started'};if(this.state!=='ready')return{status:'unknown'};return this.arms[n].interrupt(plan[n].turnId,commands[n]);}));const active=outcomes.filter((_,i)=>plan[selected[i]].mode==='steer'),complete=active.every(x=>x.status==='interrupt_requested');if(target!=='both'||!complete)this.comparisonMatched=false;return{status:complete?'accepted':active.every(x=>x.status==='not_started')?'not_started':'partial_or_unconfirmed',arms:Object.fromEntries(selected.map((n,i)=>[n,outcomes[i]]))};}finally{this.actionBusy=false;try{this.emit('status',this.snapshot());}catch{}}
+ }
+ async question(name,decision){if(this.state!=='ready'||this.dispatch.locked||!names.includes(name))throw Error('pair_not_ready');const result=await this.arms[name].question(decision);if(decision.action!=='engage')this.comparisonMatched=false;try{this.emit('status',this.snapshot());}catch{}return result;}
+ async decide(name,decision){
+  if(this.state!=='ready'||this.dispatch.locked||!names.includes(name))throw Error('pair_not_ready');
+  const arm=this.arms[name],turnId=arm.activeTurn();if(arm.state!=='approval'||!turnId||arm.interruptExpected.has(turnId))throw Error('approval_not_pending');
+  const p=arm.client.approvals.get(decision?.approvalId),view=approvalView(p,{sessionId:arm.client.sessionId,turnId});
+  if(view.status!=='review'||typeof decision?.reviewToken!=='string'||decision.reviewToken!==view.review_token||!isDeepStrictEqual(decision.requirementId,view.requirementId)||!view.choices.some(c=>c.choiceId===decision.choiceId))throw Error('approval_view_stale');
+  const selectedChoice=view.choices.find(c=>c.choiceId===decision.choiceId);if(decision.feedback!==undefined&&(typeof decision.feedback!=='string'||decision.feedback.length>4000||selectedChoice.acceptsFeedback!==true))throw Error('approval_feedback_invalid');
+  if(this.approvalPending[name].has(view.approvalId))throw Error('approval_decision_pending');
+  const pending={turnId,approvalId:view.approvalId,requirementId:structuredClone(view.requirementId),reviewToken:view.review_token,signature:pendingSignature(p,view.requirementId)};this.approvalPending[name].set(view.approvalId,pending);try{this.emit('status',this.snapshot());}catch{}
+  const fresh=approvalView(arm.client.approvals.get(view.approvalId),{sessionId:arm.client.sessionId,turnId});if(this.state!=='ready'||arm.state!=='approval'||arm.activeTurn()!==turnId||arm.interruptExpected.has(turnId)||this.approvalPending[name].get(view.approvalId)!==pending||fresh.status!=='review'||fresh.review_token!==view.review_token){if(this.approvalPending[name].get(view.approvalId)===pending)this.approvalPending[name].delete(view.approvalId);try{this.emit('status',this.snapshot());}catch{}throw Error('approval_view_stale');}
+  try{return await arm.decide(decision);}finally{try{this.emit('status',this.snapshot());}catch{}}
+ }
+ approvalSnapshot(name,arm){
+  const turnId=arm.activeTurn(),items=[];let remaining=1024*1024;for(const p of arm.client.approvals.values()){
+   let item=approvalView(p,{sessionId:arm.client.sessionId,turnId});
+   const pending=this.approvalPending[name].get(p?.approvalId);if(item.status==='unsupported'&&confirmedPendingTransition(p,pending,arm.client.sessionId,turnId))item={status:'decision_pending',decision_pending:true,approvalId:pending.approvalId,requirementId:structuredClone(pending.requirementId)};
+   if(item.status==='review'){const size=Buffer.byteLength(JSON.stringify(item));if(size>remaining){items.push({status:'unsupported',reason:'review_queued'});continue;}remaining-=size;item.decision_pending=this.approvalPending[name].has(item.approvalId);}
+   else if(item.status==='unsupported'&&arm.state==='approval'&&turnId){const diag=this.approvalDiagnostics[name],key=JSON.stringify([arm.client.sessionId,turnId,ref(p?.approvalId)?p.approvalId:null,ref(p?.currentRequirementId?.approvalId)?p.currentRequirementId.approvalId:null,Number.isSafeInteger(p?.currentRequirementId?.sourceIndex)&&p.currentRequirementId.sourceIndex>=0?p.currentRequirementId.sourceIndex:null,item.reason]);if(!diag.seen.has(key)){diag.seen.set(key,true);if(diag.seen.size>256)diag.seen.delete(diag.seen.keys().next().value);let ordinal=null;try{const n=arm.delivery?.snapshot?.()?.turn_ordinal;if(Number.isSafeInteger(n)&&n>0)ordinal=n;}catch{}diag.events.push({at:new Date().toISOString(),reason:item.reason,turn_ordinal:ordinal});if(diag.events.length>64){diag.events.shift();diag.events_omitted++;}}}
+   items.push(item);
+  }return items;
+ }
+
+ async fail(reason){if(this.state==='closed'||this.state==='stopping')return this.stopPromise;this.error=reason;return this.stop();}
+ async stop(){if(this.stopPromise)return this.stopPromise;this.state='stopping';for(const name of names){this.arms[name].close();}this.stopPromise=(async()=>{const results=await Promise.allSettled(names.map(name=>Promise.resolve().then(()=>{const arm=this.arms[name];return arm.client.stop(arm.client.activeTurnId);})));const checks=await Promise.allSettled(names.map(name=>this.confirmExit(this.arms[name].client)));const confirmed=results.every(x=>x.status==='fulfilled')&&checks.every(x=>x.status==='fulfilled'&&x.value===true);if(confirmed){try{await this.cleanup();}catch{this.error='cleanup_unconfirmed';}}else this.error='cleanup_unconfirmed';this.state='closed';try{this.emit('status',this.snapshot());}catch{}})();try{this.emit('status',this.snapshot());}catch{}return this.stopPromise;}
+ snapshot(){return {status:this.state,error:this.error,comparison:{matched_context:this.comparisonMatched,reason:this.comparisonMatched?null:'individual_messages'},arms:Object.fromEntries(names.map(name=>{const a=this.arms[name];const messages=a.events.filter(e=>e.type==='public_message'||e.type==='human_message').map(e=>({author:e.type==='human_message'?'You':'Muse',text:e.payload.text,phase:e.payload.message_phase,...(e.type==='human_message'?{target:e.payload.submission_target??'unknown'}:{...(typeof e.payload.truncated==='boolean'?{truncated:e.payload.truncated}:{}),...(typeof e.payload.cut_off==='boolean'?{cut_off:e.payload.cut_off}:{})})}));const lastTool=a.state==='running'?a.events.slice(a.turnEventStart).findLast(e=>e.type==='task_status'&&e.payload?.kind==='tool'):null;const activity=lastTool&&ref(lastTool.payload.tool)?{tool:lastTool.payload.tool,status:['inProgress','completed','failed','cancelled','rejected','timedOut'].includes(lastTool.payload.status)?lastTool.payload.status:'unknown'}:null;const approvals=this.approvalSnapshot(name,a),diagnostics=this.approvalDiagnostics[name];return [name,{approval_decision_pending:this.approvalPending[name].size>0,approval_diagnostics:{events:diagnostics.events.map(e=>({...e})),events_omitted:diagnostics.events_omitted},status:a.state,active_turn_id:a.activeTurn(),interrupt_pending:a.interruptExpected.has(a.turnId),last_turn_terminal:a.lastTurnTerminal,model:a.requestedModel?(a.delivery?.modelSnapshot?.(a.requestedModel)??modelEvidence(a.requestedModel)):null,activity,elapsed:a.elapsed(),usage:observedUsage(a),delivery:a.delivery?.snapshot()??null,messages,approvals,questions:a.questions.snapshot(),interactions:a.questions.metrics()}];}))};}
+}
+
+function observedUsage(arm){
+ const native=arm.usage.snapshot(),trace=arm.delivery?.usage.snapshot(),nativeSeen=native?.status==='observed',traceSeen=trace?.status==='observed';
+ const traceStatus=['observed','not_observed','waiting_for_usage','unavailable'].includes(trace?.status)?trace.status:'unknown';
+ const traceCoverage=['observed','partial_or_unconfirmed'].includes(trace?.coverage)?trace.coverage:'unknown';
+ let disagreement='not_comparable';
+ if(nativeSeen&&traceSeen&&traceCoverage==='observed'&&['input_tokens','output_tokens','cache_read_tokens'].every(k=>Number.isSafeInteger(native[k])&&Number.isSafeInteger(trace[k])))disagreement=['input_tokens','output_tokens','cache_read_tokens'].every(k=>native[k]===trace[k])?'same_observed_totals':'different_unverified';
+ const diagnostics={native_usage_status:native?.status??'unknown',trace_status:traceStatus,trace_coverage:traceCoverage,source_disagreement:disagreement,model_calls_source:traceSeen?'provider_trace_completed_responses':'not_observed',diagnostic:trace?.diagnostic===true};
+ if(nativeSeen)return {...native,model_calls:traceSeen?trace.model_calls:null,source:'native',coverage:'unknown',...diagnostics};
+ if(traceSeen)return {...trace,estimated_cost_usd:null,cost_partial:null,source:'provider_trace',...diagnostics};
+ const unobserved={...native,source:'unknown',coverage:'unknown'};
+ return native?.status==='unavailable'||traceStatus==='unavailable'?{...unobserved,...diagnostics}:unobserved;
+}

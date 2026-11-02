@@ -1,0 +1,10 @@
+#evidence-package-export { padding: 0 0 1rem; border-bottom: 1px solid var(--line, #ded6c8); }
+#evidence-package-export h3 { margin: 0 0 .4rem; font-size: .95rem; color: var(--ink, #17242a); }
+#evidence-package-export > .footnote { max-width: 90ch; line-height: 1.5; }
+.evidence-package-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem 1.5rem; margin-top: .9rem; }
+.evidence-package-actions label { display: inline-flex; align-items: center; gap: .5rem; font-size: .85rem; color: var(--muted, #68756f); }
+#export-evidence-package { background: #151c20; border: 1px solid #151c20; border-radius: .6rem; color: #fff; font-weight: 600; padding: .65rem 1rem; }
+#export-evidence-package:not(:disabled):hover { background: #30393d; }
+#export-evidence-package:focus-visible { outline: 3px solid #7169dc; outline-offset: 2px; }
+#export-evidence-package:disabled { opacity: .45; cursor: not-allowed; }
+#evidence-package-status { overflow-wrap: anywhere; }

@@ -1,0 +1,22 @@
+Area2 Agent Lab selected runtime snapshot
+Copyright 2026 Area2
+
+The selected Area2-owned code is included under Apache License, Version 2.0,
+by Teresa's explicit 31 October 2026 ownership and redistribution authorization.
+See LICENSE. Original file headers and the scoped host-adapters LICENSE, NOTICE
+and PROVENANCE.json are preserved without modification.
+
+This is reused foundation code, not newly authored event integration. Agent Lab
+was extracted before kickoff on 24 October 2026; its bounded Muse session
+foundations were added on 25 October. The selected 28 October snapshot includes
+later hook/fallback refinements. The import/layout and integrity checks in the
+Muse submission repository are separate event integration work.
+
+Every selected upstream file is imported byte-for-byte at the exact source commit
+and its SHA-256 is recorded in manifest.json. Only the declared canonical Muse
+native/textbox runtime subset is supplied. Optional sample-harness fixtures and
+unreached legacy factory functions are not distributed as a complete Agent Lab
+installation. No private Git history, sessions, credentials, collector, inference
+service, model weights or macOS packaging is included. Code redistribution does
+not grant API admission, model access or trademark rights. Public release and
+submission are separately controlled by the project owner.

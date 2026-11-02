@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "id": "agent-lab",
+  "rights": {
+    "status": "owner-authorized",
+    "license_spdx": "Apache-2.0",
+    "evidence": [
+      "LICENSE",
+      "NOTICE",
+      "host-adapters/LICENSE",
+      "host-adapters/NOTICE",
+      "host-adapters/PROVENANCE.json"
+    ]
+  },
+  "sources": {
+    "commit": "ba8bf79073aae931e55fe6d1deb20f71d6a02b49",
+    "repository": "https://gitlab.com/area2.ai/a2-fun/a2-presence-agent-lab",
+    "scope": "canonical Muse native/textbox runtime closure",
+    "files": [
+      {
+        "path": "agents/claude-presence-hook.py",
+        "sha256": "88dfc8dc9a1dd2637a0e7a4cfb303c259632f142f80cd56e9ba31130cbf3c126"
+      },
+      {
+        "path": "agents/collaboration-policy.json",
+        "sha256": "6771cfadfc66910b94192fdc51c6dd033a4616077bb6b624c13e0187bf32a04f"
+      },
+      {
+        "path": "agents/collaboration-policy.mjs",
+        "sha256": "395e80a79c42d3f782ec926c9093e54501aa53c9c1b46c17d421247721676da7"
+      },
+      {
+        "path": "agents/muse-interactive.mjs",
+        "sha256": "e5783a3986136aa979fac9797b618dbc7657b427b35345df3d3ea00f2dda3dd9"
+      },
+      {
+        "path": "agents/muse-warm-broker.mjs",
+        "sha256": "90e92394e947ab9e14fe0737fec99fcd63e15d949d846dd22f57b86613e15361"
+      },
+      {
+        "path": "config.mjs",
+        "sha256": "0e0b089e28e2875fd8823a8195eff0c4c853aa27d662e977339b0c03e0a7cf00"
+      },
+      {
+        "path": "core/codex-telemetry.mjs",
+        "sha256": "d5bf57a64fface0a9431c305777bf0f674d4dc11512f24ea96ac84ab57a8bc3c"
+      },
+      {
+        "path": "core/muse-capability.mjs",
+        "sha256": "adbc8a6b3acc24fa4b1433633e01b8b1926dfc9772d83b519dd479731430de9c"
+      },
+      {
+        "path": "core/muse-harness-factory.mjs",
+        "sha256": "12672461990b3469ecb7660e61855a1ef4e61584f603d270d70d19f193d1773e"
+      },
+      {
+        "path": "core/muse-msp.mjs",
+        "sha256": "82d6e7873d38bbf575e58eb2f036354ce7e0dcc8a8847b675e5a1a7b441d10d7"
+      },
+      {
+        "path": "core/muse-presence-provenance.mjs",
+        "sha256": "ee2c0d5e72b3d716a466846b136ab599811f69486a158905631ec26553fa36f7"
+      },
+      {
+        "path": "core/muse-public-events.mjs",
+        "sha256": "8feeee9581bfbe5cb47b487e3418106194882bf6e624961d53df06455d5c5043"
+      },
+      {
+        "path": "core/muse-session-harness.mjs",
+        "sha256": "ce7557c71719eb23648d0d44bb2dd3367e037ea43a32b9f93f9abbdcc36a4998"
+      },
+      {
+        "path": "core/muse-telemetry.mjs",
+        "sha256": "86dc703b9ef01b31bbae54b48bb5f7ae54306dcd4622fccf7f6be1352f785536"
+      },
+      {
+        "path": "core/native-session-index.py",
+        "sha256": "b1a97c98e1381feeb37112cd30cc4b685315ded639bfe55d1e106991bcc5e6c3"
+      },
+      {
+        "path": "core/presence-view.mjs",
+        "sha256": "0ba8a565db728416a3613d5743817623aa2aa89b44e79933edf61b94dc466c4d"
+      },
+      {
+        "path": "core/telemetry.mjs",
+        "sha256": "ee5d630fd59dfffd76f6b8f4b6ba590975bf5abfc2fe08401cdd5b6e15b3f477"
+      },
+      {
+        "path": "host-adapters/LICENSE",
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+      },
+      {
+        "path": "host-adapters/muse_boundary.py",
+        "sha256": "ea4f79d5e5b9c7d7483517d57f89942294ffb6a577a87552d6d2f453ffe23dec"
+      },
+      {
+        "path": "host-adapters/muse_budget.py",
+        "sha256": "14938b10e25e776720cb94c44dd3fbfc96b423e00fca878cc6badc6da4c12b76"
+      },
+      {
+        "path": "host-adapters/muse_warm_broker.py",
+        "sha256": "632e309471df9451759608332ddc4611ce1e35cb077a6fa026fcc435cea991e2"
+      },
+      {
+        "path": "host-adapters/NOTICE",
+        "sha256": "cb0e6ccff2294e74245610182caeaa63468c9bc13893686b4502a48c1285941d"
+      },
+      {
+        "path": "host-adapters/PROVENANCE.json",
+        "sha256": "ea7166038bcd15bc283a4004c5265d7ac10e5c6b170a9a2164e9c12dc91c6813"
+      },
+      {
+        "path": "interactive-public/presence-print.mjs",
+        "sha256": "cc25e0d2aa1c8e4d4eeb560d8a84dbb0f9da700e5793dd2d7bb8a0bfa5df7296"
+      },
+      {
+        "path": "interactive-public/pulse.css",
+        "sha256": "4c59f9850c712b9b8c0d640fd758118738d896883f71b86e98511b1e4a59990d"
+      },
+      {
+        "path": "interactive-public/pulse.mjs",
+        "sha256": "8aab0ca8b55f0b197a54d922c9cbebb13bebcd9d40c624a6ec3b3d3ebc78cd6f"
+      },
+      {
+        "path": "presence.ts",
+        "sha256": "24cdc36355af9f5d5bdfc2495b9d8fea97e9339961248258912ac976065a7b6a"
+      },
+      {
+        "path": "repo-task.txt",
+        "sha256": "d3b69609aef7a21fd8521cd1ddd2a34be6284dc907debccff591b22b8afad6e5"
+      }
+    ]
+  },
+  "runtime_entry": "core/muse-msp.mjs",
+  "files": [
+    {
+      "path": "agents/claude-presence-hook.py",
+      "sha256": "88dfc8dc9a1dd2637a0e7a4cfb303c259632f142f80cd56e9ba31130cbf3c126"
+    },
+    {
+      "path": "agents/collaboration-policy.json",
+      "sha256": "6771cfadfc66910b94192fdc51c6dd033a4616077bb6b624c13e0187bf32a04f"
+    },
+    {
+      "path": "agents/collaboration-policy.mjs",
+      "sha256": "395e80a79c42d3f782ec926c9093e54501aa53c9c1b46c17d421247721676da7"
+    },
+    {
+      "path": "agents/muse-interactive.mjs",
+      "sha256": "e5783a3986136aa979fac9797b618dbc7657b427b35345df3d3ea00f2dda3dd9"
+    },
+    {
+      "path": "agents/muse-warm-broker.mjs",
+      "sha256": "90e92394e947ab9e14fe0737fec99fcd63e15d949d846dd22f57b86613e15361"
+    },
+    {
+      "path": "config.mjs",
+      "sha256": "0e0b089e28e2875fd8823a8195eff0c4c853aa27d662e977339b0c03e0a7cf00"
+    },
+    {
+      "path": "core/codex-telemetry.mjs",
+      "sha256": "d5bf57a64fface0a9431c305777bf0f674d4dc11512f24ea96ac84ab57a8bc3c"
+    },
+    {
+      "path": "core/muse-capability.mjs",
+      "sha256": "adbc8a6b3acc24fa4b1433633e01b8b1926dfc9772d83b519dd479731430de9c"
+    },
+    {
+      "path": "core/muse-harness-factory.mjs",
+      "sha256": "12672461990b3469ecb7660e61855a1ef4e61584f603d270d70d19f193d1773e"
+    },
+    {
+      "path": "core/muse-msp.mjs",
+      "sha256": "82d6e7873d38bbf575e58eb2f036354ce7e0dcc8a8847b675e5a1a7b441d10d7"
+    },
+    {
+      "path": "core/muse-presence-provenance.mjs",
+      "sha256": "ee2c0d5e72b3d716a466846b136ab599811f69486a158905631ec26553fa36f7"
+    },
+    {
+      "path": "core/muse-public-events.mjs",
+      "sha256": "8feeee9581bfbe5cb47b487e3418106194882bf6e624961d53df06455d5c5043"
+    },
+    {
+      "path": "core/muse-session-harness.mjs",
+      "sha256": "ce7557c71719eb23648d0d44bb2dd3367e037ea43a32b9f93f9abbdcc36a4998"
+    },
+    {
+      "path": "core/muse-telemetry.mjs",
+      "sha256": "86dc703b9ef01b31bbae54b48bb5f7ae54306dcd4622fccf7f6be1352f785536"
+    },
+    {
+      "path": "core/native-session-index.py",
+      "sha256": "b1a97c98e1381feeb37112cd30cc4b685315ded639bfe55d1e106991bcc5e6c3"
+    },
+    {
+      "path": "core/presence-view.mjs",
+      "sha256": "0ba8a565db728416a3613d5743817623aa2aa89b44e79933edf61b94dc466c4d"
+    },
+    {
+      "path": "core/telemetry.mjs",
+      "sha256": "ee5d630fd59dfffd76f6b8f4b6ba590975bf5abfc2fe08401cdd5b6e15b3f477"
+    },
+    {
+      "path": "host-adapters/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "host-adapters/muse_boundary.py",
+      "sha256": "ea4f79d5e5b9c7d7483517d57f89942294ffb6a577a87552d6d2f453ffe23dec"
+    },
+    {
+      "path": "host-adapters/muse_budget.py",
+      "sha256": "14938b10e25e776720cb94c44dd3fbfc96b423e00fca878cc6badc6da4c12b76"
+    },
+    {
+      "path": "host-adapters/muse_warm_broker.py",
+      "sha256": "632e309471df9451759608332ddc4611ce1e35cb077a6fa026fcc435cea991e2"
+    },
+    {
+      "path": "host-adapters/NOTICE",
+      "sha256": "cb0e6ccff2294e74245610182caeaa63468c9bc13893686b4502a48c1285941d"
+    },
+    {
+      "path": "host-adapters/PROVENANCE.json",
+      "sha256": "ea7166038bcd15bc283a4004c5265d7ac10e5c6b170a9a2164e9c12dc91c6813"
+    },
+    {
+      "path": "interactive-public/presence-print.mjs",
+      "sha256": "cc25e0d2aa1c8e4d4eeb560d8a84dbb0f9da700e5793dd2d7bb8a0bfa5df7296"
+    },
+    {
+      "path": "interactive-public/pulse.css",
+      "sha256": "4c59f9850c712b9b8c0d640fd758118738d896883f71b86e98511b1e4a59990d"
+    },
+    {
+      "path": "interactive-public/pulse.mjs",
+      "sha256": "8aab0ca8b55f0b197a54d922c9cbebb13bebcd9d40c624a6ec3b3d3ebc78cd6f"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "NOTICE",
+      "sha256": "66932b5015ce2558ce99c93a79e51c8b30501a770cecd31fdb3cc6afa69c2b46"
+    },
+    {
+      "path": "presence.ts",
+      "sha256": "24cdc36355af9f5d5bdfc2495b9d8fea97e9339961248258912ac976065a7b6a"
+    },
+    {
+      "path": "repo-task.txt",
+      "sha256": "d3b69609aef7a21fd8521cd1ddd2a34be6284dc907debccff591b22b8afad6e5"
+    }
+  ],
+  "inputs": []
+}
