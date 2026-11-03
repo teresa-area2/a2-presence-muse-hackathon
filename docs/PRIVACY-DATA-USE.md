@@ -88,10 +88,12 @@ this does not cover RTDB, exports, workstation copies or other backups. The chec
 default log buckets retain logs for 30 days and required audit buckets for 400 days.
 Log contents, access and residency were not verified; these periods do not establish
 that every log contains tester data or that other copies are deleted on that schedule.
-The owner says users can request removal of their data and its calibration impact
-at **developers@area2.ai**. This is an operator-stated process; its execution,
+The owner says a removal request to **developers@area2.ai** covers the **whole
+shared demo evaluation dataset and its calibration contribution**, not a named
+tester's records alone. This is an operator-stated process; its execution,
 aggregate recomputation and coverage have not been independently tested, and no
-automated deletion or completion deadline is established here. No removal has been
+automated deletion or completion deadline is established here. Treatment of logs
+and backups remains unconfirmed. No removal has been
 performed as part of this review. RTDB location/backups, retention criteria, other
 secondary use or training, the responsible entity and an approved published policy
 remain unconfirmed. Local clearing, access expiry or credential rotation is not
