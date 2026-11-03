@@ -57,8 +57,11 @@ minimized key timing/category/session/time metadata from this textbox, including
 before Send; this client does not send composer text in its OP payload. Metadata
 is not anonymous. This demo deliberately shares one retained calibration subject
 across Teresa and testers: a participant can affect later normalization. This does
-not mean coding conversations are shared between testers. The retention/deletion
-process and secondary use remain unconfirmed; expiry is not deletion.
+not mean coding conversations are shared between testers. The owner reports
+population calibration described as anonymized; linked underlying records are not
+anonymous. Removal of data and its calibration impact can be requested at
+**developers@area2.ai**, according to the owner; this process has not been independently
+tested. Retention periods and deletion coverage remain unconfirmed; expiry is not deletion.
 
 Coding messages, task context and tool results go separately to Meta/Muse.
 **See Presence impact** is optional and sends selected recorded exchanges/work

@@ -75,9 +75,11 @@ and configuration have not been freshly verified.
 
 The owner reports that the default service path records submitted event metadata
 before inference and records derived profiles; Analytics retains calibration/
-cumulative state and summaries. The service can include eligible profiles in population
-aggregation, but whether these records are included is unverified. The inspected
-no-text field list above applies to this client, not a universal server allowlist.
+cumulative state and summaries. The owner states that interaction data is used for
+population calibration described as anonymized. That describes the claimed aggregate
+use, not the linked underlying records; actual inclusion and anonymization have not
+been independently verified. The inspected no-text field list above applies to this
+client, not a universal server allowlist.
 
 The infrastructure owner reported on 3 November that the two checked default
 Firestore databases are in nam5 (US Central), with no Muse calibration TTL found.
@@ -86,8 +88,12 @@ this does not cover RTDB, exports, workstation copies or other backups. The chec
 default log buckets retain logs for 30 days and required audit buckets for 400 days.
 Log contents, access and residency were not verified; these periods do not establish
 that every log contains tester data or that other copies are deleted on that schedule.
-RTDB location/backups, the access/deletion process, secondary use or training,
-the responsible entity, approved policy and privacy contact remain unconfirmed. Local clearing,
-access expiry or credential rotation is not upstream deletion. Meta's applicable
-account/service terms govern its own handling; contributor mode off is not a
-verified retention/deletion guarantee.
+The owner says users can request removal of their data and its calibration impact
+at **developers@area2.ai**. This is an operator-stated process; its execution,
+aggregate recomputation and coverage have not been independently tested, and no
+automated deletion or completion deadline is established here. No removal has been
+performed as part of this review. RTDB location/backups, retention criteria, other
+secondary use or training, the responsible entity and an approved published policy
+remain unconfirmed. Local clearing, access expiry or credential rotation is not
+upstream deletion. Meta's applicable account/service terms govern its own handling;
+contributor mode off is not a verified retention/deletion guarantee.
