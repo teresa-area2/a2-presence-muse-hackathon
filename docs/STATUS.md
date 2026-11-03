@@ -3,10 +3,14 @@
 This candidate records checked behavior and remaining limits. It does not claim a
 complete independent judge journey or production qualification.
 
-- **Offline/source checks:** the integrated source gate passed 1,747 checks with no
-  failures/skips; 76 affected checks and all five starter/reference task contracts
-  pass. Clean installation/build, exact archive/history/notices and local links are
-  checked separately in the candidate audit.
+- **Offline/source checks:** the public-npm/OP-only recovery source passes 1,755
+  offline checks with no failures/skips on Node 22.12.0 using already installed
+  local dependencies. A separate reviewer ran 35 focused checks. This is distinct
+  from the earlier 1,747-check gate and its private-access clean-install audit;
+  it does not establish fresh anonymous registry installation.
+- **Cipher installation:** anonymous access to the locked React 3.0.0/core 2.1.0
+  packages and a clean install remain pending verification. The former public-
+  judge npm token was revoked on 3 November; do not replace it in the repository.
 - **Native Muse:** existing-account 1.4.13 empty sessions, hook installation and
   catchable judge hangup cleanup were exercised without a model turn or OP capture.
   Historical 1.4.14 protocol/control checks do not qualify its full current coding/

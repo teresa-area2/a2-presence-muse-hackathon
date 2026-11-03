@@ -1,11 +1,6 @@
 {
   "schema_version": 1,
   "purpose": "hackathon-judge-evaluation",
-  "cipher": {
-    "registry": "https://registry.npmjs.org/",
-    "token": "REPLACE_WITH_DESIGNATED_TEMPORARY_CIPHER_TOKEN",
-    "expires_at": "2026-11-10T19:24:02.563Z"
-  },
   "open_presence": {
     "environment": "production",
     "client_id": "REPLACE_WITH_DESIGNATED_TEMPORARY_OP_CLIENT",

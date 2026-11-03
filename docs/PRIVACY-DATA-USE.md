@@ -34,7 +34,8 @@ network/request information, including the backend's source IP. The payload
 includes a session identifier and timestamps. This is not a promise of no
 identification, unlinkability or absence of server logs. Metadata can reveal
 interaction patterns or permit sensitive inference even without a text field.
-Cipher installation uses separate npm registry access; that is not the typing-metadata flow.
+The intended anonymous Cipher npm installation is separate from the typing-metadata
+flow; public package availability remains pending verification.
 
 ## When capture starts and stops
 
@@ -88,9 +89,10 @@ this does not cover RTDB, exports, workstation copies or other backups. The chec
 default log buckets retain logs for 30 days and required audit buckets for 400 days.
 Log contents, access and residency were not verified; these periods do not establish
 that every log contains tester data or that other copies are deleted on that schedule.
-The owner says a removal request to **developers@area2.ai** covers the **whole
-shared demo evaluation dataset and its calibration contribution**, not a named
-tester's records alone. This is an operator-stated process; its execution,
+The owner reports that Area2/Open Presence interaction data has no enforced fixed
+retention or routine automatic deletion. A removal request to **developers@area2.ai**
+covers the **whole shared Muse evaluation dataset and its calibration contribution**,
+not a named tester's records alone or unrelated Area2 datasets. This is an operator-stated process; its execution,
 aggregate recomputation and coverage have not been independently tested, and no
 automated deletion or completion deadline is established here. Treatment of logs
 and backups remains unconfirmed. No removal has been

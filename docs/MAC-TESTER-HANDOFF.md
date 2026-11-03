@@ -1,8 +1,8 @@
 # Peña and Mauro: Mac rehearsal
 
-Use only [this private GitHub repository](https://github.com/teresa-area2/a2-presence-muse-hackathon).
-Accept your invitation as `parroyoa2` or `mauro-a2`, then start from a fresh clone.
-The private development-history repository is not the tester checkout.
+Use the [public project source](https://github.com/teresa-area2/a2-presence-muse-hackathon)
+and start from a fresh clone. The private development-history repository is not
+the tester checkout.
 
 Your goal is to complete a small coding conversation with two Muse agents and
 return a result package plus your experience. Use the nonconfidential samples;
@@ -17,7 +17,7 @@ Follow the [first-time quickstart](JUDGE-QUICKSTART.md#1-connect-your-own-muse-a
 for Git, Node **22.12+ within Node 22**, the reviewed Muse versions and official
 Muse installation/sign-in. You need your **own entitled Muse account**: an active
 Muse Code plan connected by onboarding or your own authorized API billing/credits.
-A separate API key is not universally required. OP/Cipher access includes neither
+A separate API key is not universally required. OP access includes neither
 Muse access nor credits. Both coding agents use your allowance; an optional
 Observer assessment uses separate model usage. Do not assume the test is free.
 
@@ -33,7 +33,6 @@ Then follow [installation](JUDGE-QUICKSTART.md#2-install-the-submitted-checkout)
 umask 077
 git clone https://github.com/teresa-area2/a2-presence-muse-hackathon.git open-presence-muse
 cd open-presence-muse
-chmod 600 judge-access/temporary-credentials.json
 # If you use nvm:
 nvm install
 nvm use
@@ -43,10 +42,12 @@ git rev-parse HEAD
 npm run judge:install
 ```
 
-Record those version/commit outputs. The designated temporary OP/Cipher bundle is
-already included; do not send its contents or commit downloaded Cipher packages.
-Cipher install access expires **10 November**; the OP client cutoff is the start
-of **15 November UTC**. Expiry does not delete installed packages or saved records.
+Record those version/commit outputs. The intended judge package contains the
+designated OP-only file; do not send its contents. `judge:install` is designed to
+install locked Cipher versions anonymously without reading that file or npm tokens.
+Their public availability and a clean install remain pending verification. The
+prior public-judge npm token was revoked on 3 November. The OP client cutoff is
+the start of **15 November UTC**; expiry does not delete saved records.
 Stop on installation failure; use the quickstart's specific recovery guidance.
 
 ## 2. Read the notice and choose typing consent
@@ -61,9 +62,10 @@ not mean coding conversations are shared between testers. The owner reports
 population calibration described as anonymized; linked underlying records are not
 anonymous. According to the owner, a removal request to **developers@area2.ai**
 covers the **whole shared demo evaluation dataset and its calibration contribution**,
-not one named tester's records alone. Execution has not been independently tested;
-retention periods, completion time and treatment of logs/backups remain unconfirmed.
-Expiry is not deletion.
+not one named tester's records alone. Execution has not been independently tested. The owner reports no enforced fixed
+retention or routine automatic deletion. Completion time and treatment of logs/
+backups remain unconfirmed. The request excludes unrelated Area2 datasets and has
+no guaranteed deadline. Expiry is not deletion.
 
 Coding messages, task context and tool results go separately to Meta/Muse.
 **See Presence impact** is optional and sends selected recorded exchanges/work
@@ -73,6 +75,7 @@ to finish this rehearsal.
 If you agree to textbox metadata capture:
 
 ```sh
+chmod 600 judge-access/temporary-credentials.json
 npm run judge:start -- --consent-typing
 ```
 

@@ -25,7 +25,7 @@
     "react": "3.0.0",
     "core": "2.1.0",
     "lockfile": "integrations/cipher-textbox/package-lock.json",
-    "distribution": "registry installation using existing authorized access; MIT notices required for distributed bundles"
+    "distribution": "anonymous public npm installation at the exact lockfile versions; no npm token; publication availability must be verified"
   },
   "muse": {
     "qualified_version": "1.4.13",
@@ -38,7 +38,7 @@
     "schema": "open_presence.controls.v0.4",
     "instructions": "coding-instructions.3",
     "user_mode": "internal",
-    "distribution": "separate service credentials/admission; no secrets in browser/repository"
+    "distribution": "external service; the designated OP-only temporary judge exception is included in the submitted checkout; no credential is sent to the browser; Muse access remains separate"
   },
   "pulse": {
     "source": "vendor/agent-lab/interactive-public/{pulse.mjs,presence-print.mjs,pulse.css}",

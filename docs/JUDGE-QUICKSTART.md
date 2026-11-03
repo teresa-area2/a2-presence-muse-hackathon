@@ -53,7 +53,7 @@ created API key:
 | Meta Model API pay-as-you-go or approved credits | Your own authorized API key, with billing/credit and model access | Additional manually created keys use API billing, even if you also have a Muse Code subscription |
 
 A Meta account sign-in by itself does not establish either route. The included
-OP/Cipher access supplies neither Muse entitlement nor model usage. Both coding
+OP access supplies neither Muse entitlement nor model usage. Both coding
 agents consume your own allowance; the optional Observer uses separate model
 usage. See Meta's [authentication](https://dev.meta.ai/docs/muse-code/auth),
 [subscription](https://dev.meta.ai/docs/muse-code/subscriptions) and
@@ -125,36 +125,36 @@ that qualification.
 
 ## 2. Install the submitted checkout
 
-Use the actual repository/access package supplied with the submission. The
-maintainer's designated `judge-access/temporary-credentials.json` supplies the
-temporary access to private Cipher packages on npm and to OP. A normal development clone intentionally
-does not commit this file; if it is absent, request the completed judge package or
-use `--access /absolute/path/to/the/supplied-file.json` after the command's `--`.
-Do not substitute unrelated production credentials.
+The intended judge candidate carries the designated temporary OP-only file at
+`judge-access/temporary-credentials.json`; it contains no npm or Muse key. A
+normal development clone omits that file. If it is absent, request the completed
+judge package or use `--access /absolute/path/to/your/OP-file.json` on the consented
+start command. Do not substitute unrelated production credentials. The installer
+does not read this file.
 
 ```sh
 # Clone into a private local directory. Git does not preserve owner-only file modes.
 umask 077
-# Accept your invitation to this private repository first.
+# Public source; an OP-only file is needed only for consented live startup.
 git clone https://github.com/teresa-area2/a2-presence-muse-hackathon.git open-presence-muse
 cd open-presence-muse
-chmod 600 judge-access/temporary-credentials.json
 # If you use nvm:
 nvm install
 nvm use
 npm run judge:install
 ```
 
-The command performs the locked Cipher install without dependency install scripts,
-builds the browser bundle, and checks the Node/dependency setup. It uses a temporary
-owner-only npm configuration, removes it before build/check, and leaves your normal
-npm configuration unchanged. Cipher remains a private npm dependency; no Cipher
-source archive, `node_modules` or compiled browser bundle is committed.
+The intended command performs the locked anonymous npm install without dependency
+install scripts, builds the browser bundle and checks setup. It reads no access
+file or user/global npm credentials: temporary registry-only user and empty global
+configs are used and removed before build/check. Existing project `.npmrc` files
+are refused, and proxy variables are not forwarded. No Cipher archive,
+`node_modules` or compiled browser bundle is committed.
 
-Temporary **Cipher installation access expires 10 November 2026 at 19:24:02 UTC**.
-Already downloaded package files do not disappear at expiry. An already installed
-copy does not need registry access every time it starts. New installation after
-expiry requires renewed authorized package access.
+Public availability of the locked Cipher versions and a clean anonymous install
+are pending verification. If npm reports access or version errors, stop and report
+them; do not create a new npm token. The prior public-judge npm token was revoked
+on 3 November 2026.
 
 ### Installer recovery
 
@@ -166,8 +166,9 @@ temporary configuration. Build/check steps receive no copied npm credential.
 process group's termination is uncertain. No later build/check steps run. The
 helper deliberately withholds cleanup to avoid racing that uncertain process;
 the error names its originally allocated directory for checked recovery. It was
-created owner-only (0700, with npm config0600), containing the copied npm
-credential rather than an OP secret. That path is not proof of its current
+created owner-only (0700, with npm config 0600). The normal public install's
+config contains registry settings, not a credential; an explicitly selected
+legacy private install may contain a copied npm credential, never the OP secret. That path is not proof of its current
 identity or permissions. Do not immediately start another installation.
 
 `judge_access_cleanup_failed` means no owned process has unconfirmed termination,
@@ -218,6 +219,7 @@ without the flag. Requesting an Observer explanation/assessment is a separate ac
 After reading the notice and agreeing to this typing-metadata processing:
 
 ```sh
+chmod 600 judge-access/temporary-credentials.json
 npm run judge:start -- --consent-typing
 ```
 
@@ -236,8 +238,8 @@ OP Auth/capture dispatches and subsequent guidance selections fail closed at or
 after it. Retained guidance becomes ordinary fallback while Muse coding sessions
 continue. A request started earlier can finish later, but its late result cannot
 become eligible guidance. This is a client-clock guard, not a verified server
-expiry; server-side revocation/limits can reject access earlier. This is separate from the verified npm
-token expiry. The current transport uses the supplied account's `internal` mode;
+expiry; server-side revocation/limits can reject access earlier. The revoked npm
+token is unrelated to this OP cutoff. The current transport uses the supplied account's `internal` mode;
 the same OP credentials are intentionally supplied to judges, as confirmed by the
 owner. The owner reports one retained calibration subject shared by Teresa and
 testers in the 28–29 October Muse configuration: local session IDs do not isolate
@@ -333,7 +335,7 @@ npm run demo:offline
 ```
 
 The second command runs generated synthetic textbox events through stub inference
-and reports JSON. It does not use the private Cipher SDK, real OP, Muse, typing or
+and reports JSON. It does not use the Cipher SDK, real OP, Muse, typing or
 calibration. It checks mechanisms, not the real end-to-end product experience.
 Full offline tests after installation are `npm run test:offline`.
 

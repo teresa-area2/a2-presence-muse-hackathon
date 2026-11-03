@@ -1,6 +1,6 @@
 # Setup
 
-Start with the [judge quickstart](JUDGE-QUICKSTART.md) for prerequisites, your own Muse authentication and explicit typing-metadata consent. The designated temporary OP/Cipher file is the sole submission credential exception; see [its scope and expiry](../judge-access/README.md). It does not contain or provide a Muse key.
+Start with the [judge quickstart](JUDGE-QUICKSTART.md) for prerequisites, your own Muse authentication and explicit typing-metadata consent. The designated temporary OP-only file is the sole submission credential exception; see [its scope and expiry](../judge-access/README.md). It does not provide a Muse key or npm token.
 
 ## Dependencies and offline checks
 
@@ -13,7 +13,7 @@ npm run test:offline
 npm run test:tasks
 ```
 
-The judge installer uses the designated access file to perform a locked private Cipher npm install, builds the browser client and checks setup. It uses a temporary owner-only npm configuration and removes it before build/check. It does not commit private Cipher packages or the generated `.local/web/cipher-textbox.mjs`. Registry failure is a setup failure, not permission to copy old packages. The [access notes](../judge-access/README.md) describe the broader token scope and expiry.
+The intended judge installer performs a locked anonymous Cipher npm install, builds the browser client and checks setup without reading an access file. It uses temporary owner-only registry-only user and empty global npm configuration, removes it before build/check, and refuses project `.npmrc` files. Proxy variables are not forwarded. Public availability of the locked versions and a clean install are pending verification; a registry failure is a setup failure, not permission to copy old packages. The generated `.local/web/cipher-textbox.mjs` and downloaded packages are not committed.
 
 Offline checks use synthetic data and fake service adapters; some use temporary loopback sockets or the local sandbox. They do not establish model behavior, real-person benefit or first-time judge sign-in. See [qualification status](STATUS.md).
 
@@ -28,7 +28,7 @@ For local judge consent, use the [explicit launcher steps](JUDGE-QUICKSTART.md#3
 A live-authorized session can send textbox metadata before Send; recipient selection
 is not a capture-consent control. This does not authorize the optional model assessments.
 
-The judge launcher enables live textbox Presence only with `--consent-typing`. The textbox collects interaction timing metadata for Presence; it does not require the separate Mac background collector. Start without that flag to use ordinary fallback. Live service availability, tenant boundaries and real-user qualification are not established by installation. Keep Muse credentials separate from the designated OP/Cipher bundle.
+The judge launcher enables live textbox Presence only with `--consent-typing`. The textbox collects interaction timing metadata for Presence; it does not require the separate Mac background collector. Start without that flag to use ordinary fallback. Live service availability, tenant boundaries and real-user qualification are not established by installation. Keep Muse credentials separate from the designated OP-only bundle.
 
 ## Automatic capture-event evidence
 

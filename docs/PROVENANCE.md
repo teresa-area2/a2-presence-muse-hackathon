@@ -30,9 +30,9 @@ not relicense whole upstream repositories or grant service/model admission. The
 repository's contributed integration uses the root Apache-2.0 license. No
 proprietary Diatype font is included.
 
-Cipher React/core implementations are private scoped packages on the public npm
-registry. They are installed with authorized access rather than shipped as code,
-archives or a compiled browser bundle. Open Presence
+Cipher React/core implementations must be publicly installable at the exact
+locked npm versions for anonymous judge setup. They are installed from the
+registry, not shipped in Git as code, archives or a compiled browser bundle. Open Presence
 inference and Muse Code/model access remain external. The event integration was
 developed using Muse Code and additional development/review tools. Component
 disclosure and owner licensing do not settle hackathon eligibility; no new

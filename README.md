@@ -48,14 +48,16 @@ another. A separate manually created key is not always required. This harness
 requires Muse's readable stored auth file; environment-only keys and Keychain-only
 login are not qualified for these isolated panes.
 
-The submission candidate already includes the designated
-`judge-access/temporary-credentials.json` for Cipher installation and Open Presence
-only. It includes no personal Meta credential. After following the quickstart's
-account and prerequisite steps:
+The intended judge candidate carries the designated temporary Open Presence access
+file at `judge-access/temporary-credentials.json`, with no npm or personal Meta key.
+The installer is designed to fetch the locked Cipher packages anonymously from npm;
+public availability and a clean install are still pending verification. After
+following the quickstart's account and prerequisite steps:
 
 ```sh
-chmod 600 judge-access/temporary-credentials.json
 npm run judge:install
+# Before a consented live Presence session:
+chmod 600 judge-access/temporary-credentials.json
 npm run judge:start -- --consent-typing
 ```
 
@@ -63,8 +65,9 @@ Open **http://127.0.0.1:8930/**, choose a task/model and open both sessions. Ope
 sessions sends no model task; Send uses the judge's own allowance. Account login
 or a readable credential file does not itself prove valid model access.
 
-Cipher installation access expires 10 November 2026; OP is owner-reported to expire
-15 November 2026 with the launcher's conservative UTC cutoff. The owner reports a
+The prior npm token was revoked on 3 November 2026; normal installation no longer
+uses it. OP is owner-reported to expire 15 November 2026 with the launcher's
+conservative UTC cutoff. The owner reports a
 retained calibration subject shared across Teresa and testers; local session IDs do
 not isolate it. Scope, dated grant expiry and deletion limits are in
 [judge access](judge-access/README.md) and [Privacy & Data Use](docs/PRIVACY-DATA-USE.md). The separate
@@ -103,4 +106,4 @@ The offline replay uses declared fixtures, not human typing or a live model. The
 
 The UI export stays private. A separate `npm run evidence:public -- --input /absolute/path/to/package.json` creates a closed, redacted review copy directly under `evidence/runs/`; see the [evidence guide](evidence/README.md). It does not commit, publish or run a model. No real-run exports are included in this candidate.
 
-The selected [Agent Lab/Pulse](vendor/agent-lab/NOTICE) and [Capsule validator](vendor/capsule-validator/NOTICE.md) are reused foundations, not newly built models. Cipher remains an external private npm dependency; Muse Code and OP inference are external services. See [dependency scope](docs/DEPENDENCIES.md) and [provenance](docs/PROVENANCE.md).
+The selected [Agent Lab/Pulse](vendor/agent-lab/NOTICE) and [Capsule validator](vendor/capsule-validator/NOTICE.md) are reused foundations, not newly built models. Cipher remains an external npm dependency; Muse Code and OP inference are external services. See [dependency scope](docs/DEPENDENCIES.md) and [provenance](docs/PROVENANCE.md).
