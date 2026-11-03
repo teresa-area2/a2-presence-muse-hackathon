@@ -3,10 +3,25 @@
 This candidate records checked behavior and remaining limits. It does not claim a
 complete independent judge journey or production qualification.
 
-- **Offline/source checks:** the integrated source gate passed 1,747 checks with no
-  failures/skips; 76 affected checks and all five starter/reference task contracts
-  pass. Clean installation/build, exact archive/history/notices and local links are
-  checked separately in the candidate audit.
+- **Offline/source checks:** combined recovery source `d3e5b79` with Mauro's
+  public lite package PR94a466b passed all 1,755 offline checks, zero failures/skips,
+  on Node22.12.0 in a fresh local checkout. Five task fixtures and offline textbox
+  replay passed. Separate compatibility review passed35 focused synthetic tests,
+  plus an in-memory embedded/direct-core probe; no real React browser/typing or
+  independent judge journey is established by those checks.
+- **Cipher installation:** public `@area2-ai/a2-cipher-react-lite@3.0.0` and
+  `@area2-ai/a2-cipher-core-lite@2.1.0` installed from an empty npm cache with
+  isolated registry-only user/empty global configs and no token/config inheritance.
+  The normal `npm run judge:install` then passed install/build/setup/pin checks.
+  Existing import paths are npm aliases; original private packages remain separate.
+  The former npm token is revoked; normal judge installation never reads it or the
+  OP access file. This is a local installation qualification, not live OP admission.
+- **Credential-file cleanup:** the functional source PR deliberately leaves the
+  actual evaluation file unchanged from public main. Its obsolete revoked npm
+  entry is ignored by normal installation; owner cleanup remains separate. No new
+  credential values or access are added by the source PR. OP-only examples and
+  startup compatibility are supported, but this does not claim the current file
+  has already been cleaned or that OP admission was rechecked.
 - **Native Muse:** existing-account 1.4.13 empty sessions, hook installation and
   catchable judge hangup cleanup were exercised without a model turn or OP capture.
   Historical 1.4.14 protocol/control checks do not qualify its full current coding/

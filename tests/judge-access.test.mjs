@@ -9,3 +9,15 @@ test('arguments require explicit typing consent and closed flags',()=>{assert.de
 
 test('judge start carries its conservative cutoff into the private OP client config',async t=>{const parent=await fs.mkdtemp(path.join(os.tmpdir(),'judge-cutoff-test-')),root=path.join(parent,'repo');await fs.mkdir(root);t.after(()=>fs.rm(parent,{recursive:true,force:true}));const bundle=parseJudgeAccess(sample(),{purpose:'start',now}),prepared=await prepareJudgeAccess(bundle,{repoRoot:root,tempBase:parent});try{const {loadPrivateOpConfig}=await import('../src/op-service-client.mjs'),config=await loadPrivateOpConfig(prepared.environment.A2_MUSE_OP_CONFIG,{repoRoot:root});assert.equal(config.client_cutoff_at,bundle.summary.op_client_cutoff_at);}finally{await prepared.cleanup();}});
 test('judge preparation refuses malformed or altered intended cutoff and removes its owned temporary copy',async t=>{const parent=await fs.mkdtemp(path.join(os.tmpdir(),'judge-bad-cutoff-')),root=path.join(parent,'repo');await fs.mkdir(root);t.after(()=>fs.rm(parent,{recursive:true,force:true}));for(const value of[undefined,null,'2026-02-30T00:00:00.000Z','2026-11-16T00:00:00.000Z']){const b=parseJudgeAccess(sample(),{purpose:'start',now});b.summary.op_client_cutoff_at=value;await assert.rejects(prepareJudgeAccess(b,{repoRoot:root,tempBase:parent}),/judge_expiry_invalid/);assert.deepEqual(await fs.readdir(parent),['repo']);}});
+
+
+test('OP-only access starts without an npm token while explicit private installs still require one',async t=>{
+ const input=sample();delete input.cipher;
+ const parsed=parseJudgeAccess(input,{purpose:'start',now});
+ assert.equal(parsed.cipher,null);assert.equal(parsed.summary.cipher_install_expires_at,null);assert.equal(parsed.summary.registry,null);
+ assert.throws(()=>parseJudgeAccess(input,{purpose:'install',now}),/judge_cipher_access_invalid/);
+ const parent=await fs.mkdtemp(path.join(os.tmpdir(),'judge-op-only-')),root=path.join(parent,'repo');await fs.mkdir(root);t.after(()=>fs.rm(parent,{recursive:true,force:true}));
+ const prepared=await prepareJudgeAccess(parsed,{repoRoot:root,tempBase:parent});
+ try{assert.deepEqual(Object.keys(prepared.environment),['A2_MUSE_OP_CONFIG']);const saved=JSON.parse(await fs.readFile(prepared.environment.A2_MUSE_OP_CONFIG,'utf8'));assert.equal(saved.client_id,input.open_presence.client_id);assert.equal(saved.client_secret,input.open_presence.client_secret);assert.ok(!JSON.stringify(saved).includes('npm_'));}
+ finally{await prepared.cleanup();}
+});

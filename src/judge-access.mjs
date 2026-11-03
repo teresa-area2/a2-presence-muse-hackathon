@@ -9,15 +9,18 @@ export function parseJudgeAccess(input,{purpose,now=Date.now()}={}){
  if(!['install','start'].includes(purpose)||!Number.isFinite(now)||now<0)error('judge_access_arguments_invalid');
  if(!keys(input,['schema_version','purpose','cipher','open_presence'])||input.schema_version!==1||input.purpose!=='hackathon-judge-evaluation')error('judge_access_invalid');
  const c=input.cipher,o=input.open_presence;
- if(!keys(c,['registry','token','expires_at'])||c.registry!=='https://registry.npmjs.org/'||!value(c.token)||!/^npm_[A-Za-z0-9_-]+$/.test(c.token))error('judge_cipher_access_invalid');
- const cipherExpiry=instant(c.expires_at);
+ // Public-package installs do not read this file. OP-only start bundles omit
+ // cipher; an explicit legacy private install still requires valid npm access.
+ if(c!==undefined&&(!keys(c,['registry','token','expires_at'])||c.registry!=='https://registry.npmjs.org/'||!value(c.token)||!/^npm_[A-Za-z0-9_-]+$/.test(c.token)))error('judge_cipher_access_invalid');
+ if(purpose==='install'&&c===undefined)error('judge_cipher_access_invalid');
+ const cipherExpiry=c===undefined?null:instant(c.expires_at);
  if(!keys(o,['environment','client_id','client_secret','expires_on'])||!['dev','production'].includes(o.environment)||!value(o.client_id)||o.client_id.includes(':')||!value(o.client_secret)||typeof o.expires_on!=='string'||!/^\d{4}-\d\d-\d\d$/.test(o.expires_on)||!Number.isFinite(Date.parse(o.expires_on+'T00:00:00.000Z'))||new Date(o.expires_on+'T00:00:00.000Z').toISOString().slice(0,10)!==o.expires_on)error('judge_op_access_invalid');
  // OP's owner reported a date, not a verified hour. Stop at its start in UTC;
  // the service remains authoritative and may reject a credential earlier.
  const opCutoff=Date.parse(o.expires_on+'T00:00:00.000Z');
  if(purpose==='install'&&now>=cipherExpiry)error('judge_cipher_access_expired');
  if(purpose==='start'&&now>=opCutoff)error('judge_op_access_expired');
- return {purpose,cipher:{...c},open_presence:{...o},summary:{purpose,cipher_install_expires_at:c.expires_at,op_owner_reported_expiry_on:o.expires_on,op_client_cutoff_at:new Date(opCutoff).toISOString(),op_server_expiry_hour:'not_verified',registry:c.registry,muse_access:'requires_judge_own_authorized_account'}};
+ return {purpose,cipher:c===undefined?null:{...c},open_presence:{...o},summary:{purpose,cipher_install_expires_at:c?.expires_at??null,op_owner_reported_expiry_on:o.expires_on,op_client_cutoff_at:new Date(opCutoff).toISOString(),op_server_expiry_hour:'not_verified',registry:c?.registry??null,muse_access:'requires_judge_own_authorized_account'}};
 }
 export async function readJudgeAccess(file,options){
  if(typeof file!=='string'||!path.isAbsolute(file))error('judge_access_path_invalid');
