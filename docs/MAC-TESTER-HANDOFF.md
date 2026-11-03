@@ -5,11 +5,24 @@ and start from a fresh clone. The private development-history repository is not
 the tester checkout.
 
 Your goal is to complete a small coding conversation with two Muse agents and
-return a result package plus your experience. Use the nonconfidential samples;
+return one result package per task pair plus your experience. Use the nonconfidential samples;
 avoid sensitive text or code in this rehearsal. A neutral policy, similar answers,
 a failed check or a setup failure is useful feedback; do not try to manufacture a
 Presence effect. Fresh independent account/setup and real coding/typing remain
 rehearsal gates, not already verified outcomes.
+
+## Before Teresa sends this handoff
+
+**Prepared, not yet a qualified release.** Teresa must first supply the exact full
+GitHub release commit after both public Cipher packages and the fresh anonymous
+install pass. Use that same commit for both testers. Do not use the private
+archive, older rehearsal tags or an unqualified moving `main` as a substitute.
+The current public-npm recovery branch is not a completed independent rehearsal.
+
+Start with **one Trip bill pair** each and return its result before doing the
+remaining tasks. Allow time for setup and a real conversation; completion speed
+or fewer tokens is not the goal. Then use the [five-task loop and return guide](MAC-TESTER-TASKS.md).
+No Mac background collector, npm token or shared Muse login is required.
 
 ## 1. Set up your own Mac and Muse account
 
@@ -30,18 +43,28 @@ error instead of changing the protocol allowlist.
 Then follow [installation](JUDGE-QUICKSTART.md#2-install-the-submitted-checkout):
 
 ```sh
-umask 077
-git clone https://github.com/teresa-area2/a2-presence-muse-hackathon.git open-presence-muse
-cd open-presence-muse
-# If you use nvm:
-nvm install
-nvm use
-node --version
-MUSE_NO_AUTO_UPDATE=1 muse --version
-git rev-parse HEAD
-npm run judge:install
+(
+  set -e
+  umask 077
+  printf 'Paste the approved full release commit from Teresa: '
+  IFS= read -r judge_commit
+  test "${#judge_commit}" -eq 40
+  case "$judge_commit" in *[!0-9a-f]*) exit 2 ;; esac
+  git clone https://github.com/teresa-area2/a2-presence-muse-hackathon.git "$HOME/Desktop/open-presence-muse-judge"
+  cd "$HOME/Desktop/open-presence-muse-judge"
+  git checkout --detach "$judge_commit"
+  test "$(git rev-parse HEAD)" = "$judge_commit"
+  if command -v nvm >/dev/null 2>&1; then nvm install; nvm use; fi
+  node --version
+  MUSE_NO_AUTO_UPDATE=1 muse --version
+  git rev-parse HEAD
+  npm run judge:install
+)
 ```
 
+The block stops at the first failure. If the destination already exists, use a
+new unused folder and adjust the later `cd`; do not overwrite or delete an old
+comparison. Without nvm, install the documented Node22 version before this block.
 Record those version/commit outputs. The intended judge package contains the
 designated OP-only file; do not send its contents. `judge:install` is designed to
 install locked Cipher versions anonymously without reading that file or npm tokens.
@@ -75,19 +98,26 @@ to finish this rehearsal.
 If you agree to textbox metadata capture:
 
 ```sh
-chmod 600 judge-access/temporary-credentials.json
-npm run judge:start -- --consent-typing
+(
+  set -e
+  cd "$HOME/Desktop/open-presence-muse-judge"
+  if command -v nvm >/dev/null 2>&1; then nvm use; fi
+  chmod 600 judge-access/temporary-credentials.json
+  npm run judge:start -- --consent-typing
+)
 ```
 
-Otherwise omit `--consent-typing` and report that you tested ordinary fallback.
+Otherwise omit `--consent-typing` (and the access-file `chmod` if no OP file is
+present), and report that you tested ordinary fallback.
 Open the printed **http://127.0.0.1:8930/** URL on the same Mac. Keep one workspace;
 if the port is occupied, stop and identify the existing one. Do not expose a tunnel
 or kill unrelated processes. Opening sessions sends no coding prompt.
 
 ## 3. Complete the first matched conversation
 
-1. Select **Split a trip bill** and one model available to your account. Both arms
-   use that same model. Open sessions and select **Both** in the composer.
+1. Select **Split a trip bill** and **Spark 1.3** for both agents if your account
+   permits it. Report a model-access problem before substituting; a Wonder run is
+   a separately labelled comparison. Open sessions and select **Both** in the composer.
 2. Type normally, adding your own context, and send:
    > Read TASK.md and CONTRACT.md. Explain what is wrong with the current
    > implementation and suggest a short plan to fix it. Wait for my response
@@ -99,18 +129,26 @@ or kill unrelated processes. Opening sessions sends no coding prompt.
    you understand. A decision is permission for that action, not proof it worked.
    If an approval is unsupported or stuck, capture the nonsecret message and report
    it; do not repeatedly click or disable safeguards.
+   A native question is different from an approval: answer its options or use
+   **Reply in message box** for that agent. Select that one recipient; **Both**
+   cannot answer two native questions. Record any different replies you supply.
 5. Ask both a natural follow-up, for example “Explain why Cara owes €45, and show
    how you handle five cents split three ways.” You may steer during work. Escape
    interrupts work without closing sessions. To target both, focus the shared
    message box, verify **Both** is selected, then press Escape. Escape from inside
    a terminal pane targets that pane instead. Record any different messages,
    decisions or interruptions between arms.
-6. Once both finish, reselect **Both** before **Check code** so both arms are checked;
+6. Once both are **Ready**, with no pending question, approval or turn, reselect
+   **Both** before **Check code** so both arms are checked;
    clicking a pane can have changed the selection. If checks fail, keep **Both**
    selected for **Send CI feedback** to send each agent its own repair results; this
-   consumes model usage. Check again afterward. Unavailable checks are not passes.
+   consumes model usage. Before every Check code or Send CI feedback, reselect
+   **Both** and wait until both are Ready. Unavailable checks are not passes.
 7. Record whether the Presence reading/request status changed and what you actually
    noticed in the replies or optional updates. A reading is not proof of benefit.
+
+If a send or connection is uncertain, keep your draft and inspect both panes
+before sending again; do not assume both received it or repeatedly resend.
 
 For more coverage, export this pair, close it, choose another predefined task and
 open a fresh pair. Try the remaining prepared tasks if your allowance permits;
@@ -122,8 +160,10 @@ read the reference solution or facilitator checks into either agent's context.
 
 Before closing each pair, open **Testing and diagnostics**:
 
-- Complete **Effort and experience** only after you can judge the whole pair;
-  leave an answer unknown if you cannot assess it.
+- If measuring review time, use **Start review** before reading an arm and
+  **Finish review** afterward. Complete **Effort and experience** after the whole
+  pair; leave unknown ratings unset. Wait for **Recorded for this pair.** after
+  the last rating and stop any active review timer before exporting.
 - Click **Export evidence package**. Leave quoted public excerpts off unless you
   deliberately want them included. Export makes no new model call.
 - Confirm the reported save result and locate the new JSON under the checkout's
@@ -131,12 +171,15 @@ Before closing each pair, open **Testing and diagnostics**:
   is readable and belongs to this run; this is not a session restore/import.
   Inspect it before sharing. Assessment narrative or optional excerpts can contain
   task details even though full transcripts and work-file contents are excluded.
-  If saving is not confirmed or the file is absent, report the error as a failure.
+  If **Newer evidence is available**, settle final checks/ratings and export the
+  final snapshot again. If save durability is unconfirmed, inspect only the named
+  possible file before retrying. If saving is not confirmed or the file is absent,
+  report the error; do not treat the package as successfully saved.
 - Return one JSON per task pair directly to Teresa through your agreed private
   channel, plus the short note below. Do not put raw exports into Git or public
   issues, and do not send credentials, raw typing, Capsules or auth-file contents.
 
-Feedback note:
+Use the [per-task feedback template](TESTER-FEEDBACK-TEMPLATE.md), or this short note:
 
 ```text
 Tester / macOS / Node / Muse version / Git commit:
@@ -153,4 +196,5 @@ Use **Close sessions**, then Ctrl-C in the launch terminal. This stops future
 capture and removes temporary configuration on confirmed normal cleanup. An
 in-flight request can still finish; stopping does not delete saved local/upstream
 records. Keep the evidence files for recovery; native conversations do not resume
-from an export. See the [quickstart](JUDGE-QUICKSTART.md) for known limits.
+from an export. If shutdown or cleanup is unconfirmed, report the error before
+opening another workspace; do not kill unrelated processes. See the [quickstart](JUDGE-QUICKSTART.md) for known limits.
