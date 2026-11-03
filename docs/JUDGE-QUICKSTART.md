@@ -126,8 +126,8 @@ that qualification.
 ## 2. Install the submitted checkout
 
 The designated temporary file at `judge-access/temporary-credentials.json`
-supplies OP evaluation access, not Muse access. Its obsolete revoked npm entry
-remains pending owner cleanup; normal installation never reads it. A
+is OP-only and supplies no Muse access. Normal installation does not read it or
+require npm authentication. A
 normal development clone omits that file. If it is absent, request the completed
 judge package or use `--access /absolute/path/to/your/OP-file.json` on the consented
 start command. Do not substitute unrelated production credentials. The installer

@@ -3,9 +3,9 @@
 ## Designated OP access and separate installation
 
 The designated `judge-access/temporary-credentials.json` supplies temporary OP
-evaluation access, not a Muse key. This source update leaves the actual file
-unchanged from public main: its obsolete revoked npm entry remains pending owner
-cleanup and is never read by normal installation. Keep
+evaluation access and is OP-only, without a Muse key or npm token. The coordinator
+verified the user’s cleanup in `44be3b1` left the OP fields unchanged; Git history
+was not purged. Normal installation does not read this file. Keep
 its local copy mode 0600; the user's own Muse login and billing remain separate.
 A normal development checkout omits it. Use [the first-time journey](../docs/JUDGE-QUICKSTART.md)
 for consent, fallback and setup.

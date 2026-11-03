@@ -16,12 +16,11 @@ complete independent judge journey or production qualification.
   Existing import paths are npm aliases; original private packages remain separate.
   The former npm token is revoked; normal judge installation never reads it or the
   OP access file. This is a local installation qualification, not live OP admission.
-- **Credential-file cleanup:** the functional source PR deliberately leaves the
-  actual evaluation file unchanged from public main. Its obsolete revoked npm
-  entry is ignored by normal installation; owner cleanup remains separate. No new
-  credential values or access are added by the source PR. OP-only examples and
-  startup compatibility are supported, but this does not claim the current file
-  has already been cleaned or that OP admission was rechecked.
+- **Credential-file cleanup:** the user removed the revoked npm entry in public
+  commit `44be3b1`. The coordinator verified that the remaining OP fields were
+  unchanged and the current file is OP-only. This does not purge Git history,
+  grant new access or establish a fresh OP admission check. Normal installation
+  does not read the evaluation file.
 - **Native Muse:** existing-account 1.4.13 empty sessions, hook installation and
   catchable judge hangup cleanup were exercised without a model turn or OP capture.
   Historical 1.4.14 protocol/control checks do not qualify its full current coding/
