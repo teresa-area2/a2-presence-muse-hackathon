@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@area2-ai/a2-cipher-react": "3.0.0",
+    "@area2-ai/a2-cipher-core": "npm:@area2-ai/a2-cipher-core-lite@2.1.0",
+    "@area2-ai/a2-cipher-react": "npm:@area2-ai/a2-cipher-react-lite@3.0.0",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
