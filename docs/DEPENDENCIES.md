@@ -1,6 +1,6 @@
 # Dependencies and distribution
 
-The repository includes the selected Agent Lab/Pulse closure and Capsule validator, with their manifests and notices. Cipher is installed from a private npm registry; Muse Code and Open Presence inference remain external services. See [provenance](PROVENANCE.md) for reused-work and agent attribution.
+The repository includes the selected Agent Lab/Pulse closure and Capsule validator, with their manifests and notices. Cipher is an external npm dependency; Muse Code and Open Presence inference remain external services. See [provenance](PROVENANCE.md) for reused-work and agent attribution.
 
 ## Agent Lab and Pulse
 
@@ -12,6 +12,6 @@ The vendored validator's upstream artifact SHA-256 is `7d03442ea27814f987f211102
 
 ## Cipher and external services
 
-The locked Cipher React 3.0.0 and core 2.1.0 packages are installed using the authorized private npm access. Their implementations, cached packages, `node_modules` and generated browser bundle are not included in the repository. The integration files and lockfile under `integrations/cipher-textbox/` are required to build the local browser client. OP inference and Muse Code are separately operated; the repository does not redistribute a Muse binary or provide a Muse account.
+The locked anonymous npm install resolves the existing React/core import names to public `@area2-ai/a2-cipher-react-lite@3.0.0` and `@area2-ai/a2-cipher-core-lite@2.1.0`. The original private packages are separate identities. A fresh empty-cache install, normal judge install/build and 1,755 offline checks passed locally on 3 November. Their implementations, cached packages, `node_modules` and generated browser bundle are not included in the repository. The integration files and lockfile under `integrations/cipher-textbox/` are required to build the local browser client. OP inference and Muse Code are separately operated; the repository does not redistribute a Muse binary or provide a Muse account.
 
-The designated temporary `judge-access/temporary-credentials.json` is the explicit submission exception for OP/Cipher access. It must contain no Muse key or other credentials. Its registry token has broader `@area2-ai` scope than the two Cipher packages; recipients can download and retain other packages available to that token. Expiry cannot retract already downloaded copies. OP tenant and quota isolation remain unverified. Read [access scope and expiry](../judge-access/README.md) before use or distribution.
+The designated `judge-access/temporary-credentials.json` supplies OP evaluation access, not a Muse key. An obsolete revoked npm entry remains pending owner cleanup and is never read by normal installation. The former public-judge npm token was revoked on 3 November 2026. The OP service uses the owner-reported shared calibration subject; quota and upstream deletion remain unverified. Read [access scope and expiry](../judge-access/README.md) before use or distribution.

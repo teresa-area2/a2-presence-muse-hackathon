@@ -25,7 +25,11 @@
     "react": "3.0.0",
     "core": "2.1.0",
     "lockfile": "integrations/cipher-textbox/package-lock.json",
-    "distribution": "registry installation using existing authorized access; MIT notices required for distributed bundles"
+    "distribution": "anonymous public npm lite packages via existing import aliases at exact lockfile versions; installation requires no npm token; implementation remains external",
+    "registry_packages": {
+      "react": "@area2-ai/a2-cipher-react-lite",
+      "core": "@area2-ai/a2-cipher-core-lite"
+    }
   },
   "muse": {
     "qualified_version": "1.4.13",
@@ -38,7 +42,7 @@
     "schema": "open_presence.controls.v0.4",
     "instructions": "coding-instructions.3",
     "user_mode": "internal",
-    "distribution": "separate service credentials/admission; no secrets in browser/repository"
+    "distribution": "external service; designated temporary OP evaluation access is in the checkout, not sent to the browser; obsolete revoked npm entry is ignored by normal installation pending owner cleanup; Muse access remains separate"
   },
   "pulse": {
     "source": "vendor/agent-lab/interactive-public/{pulse.mjs,presence-print.mjs,pulse.css}",

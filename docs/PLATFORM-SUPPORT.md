@@ -2,7 +2,7 @@
 
 The preferred rehearsal machine is an Apple Silicon Mac. An Intel Mac has not had this project's complete judge journey qualified.
 
-Implemented paths and checked mechanisms are different from a complete judge journey. Every route uses the judge's own entitled Muse account. The temporary OP/Cipher bundle provides no Muse access; the background Mac collector is not required.
+Implemented paths and checked mechanisms are different from a complete judge journey. Every route uses the judge's own entitled Muse account. The designated evaluation bundle provides no Muse access; the background Mac collector is not required.
 
 | Route | Checked behavior | Still open |
 | --- | --- | --- |

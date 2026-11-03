@@ -13,8 +13,8 @@ try{
  const {judgeArguments}=await import('../src/judge-access.mjs');
  const {runJudgeInstall}=await import('../src/judge-install-runner.mjs');
  const options=judgeArguments(process.argv.slice(2));if(options.consent||options.port!==null)throw Error('judge_install_argument_invalid');
- await runJudgeInstall({root,accessPath:options.access??path.join(root,'judge-access/temporary-credentials.json'),signal:abort.signal,onProgress:name=>console.log(name+'…')});
- console.log('Installed and built. Run muse and use first-run sign-in or /login inside Muse with your own entitled account. Then npm run judge:start -- --consent-typing.');
+ await runJudgeInstall({root,accessPath:options.access,signal:abort.signal,onProgress:name=>console.log(name+'…')});
+ console.log('Installed and built. '+(options.access?'Used explicitly selected registry access. ':'No npm token required. ')+'Run muse and use first-run sign-in or /login inside Muse with your own entitled account. Then npm run judge:start -- --consent-typing.');
 }catch(e){
  console.error(judgePlatformMessage(e)??(/^judge_[a-z0-9_]+$/.test(e.message)?e.message:'judge_install_failed'));
  if(e.message==='judge_access_cleanup_unconfirmed'&&typeof e.recovery?.directory==='string'&&path.isAbsolute(e.recovery.directory)&&path.basename(e.recovery.directory).startsWith('a2-judge-access-'))console.error('Original npm configuration directory (verify identity before recovery): '+JSON.stringify(e.recovery.directory)+'. See docs/JUDGE-QUICKSTART.md#installer-recovery.');

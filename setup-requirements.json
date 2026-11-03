@@ -2,7 +2,7 @@
   "version": 1,
   "node": {
     "required": ">=22.12.0 <23.0.0",
-    "purpose": "Run the bundled local interface, checksum preflight and verification. Cipher retains its separate locked npm install/build."
+    "purpose": "Run the bundled local interface, checksum preflight and verification. Cipher uses its separate locked public npm install/build without an npm token."
   },
   "python": {
     "required": ">=3.11",
