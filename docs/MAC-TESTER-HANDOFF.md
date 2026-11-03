@@ -13,11 +13,11 @@ rehearsal gates, not already verified outcomes.
 
 ## Before Teresa sends this handoff
 
-**Pending the accepted release commit.** Public Cipher lite packages, a fresh
-anonymous installation and the normal judge installer have passed locally.
-Teresa must still supply the exact approved full GitHub release commit. Use that same commit for both testers. Do not use the private
-archive, older rehearsal tags or an unqualified moving `main` as a substitute.
-The current public-npm recovery branch is not a completed independent rehearsal.
+**Use the rehearsal SHA approved by Teresa.** Public Cipher lite packages, a fresh
+anonymous installation and the normal judge installer have passed locally. Teresa
+will supply the exact approved full GitHub commit; use the same commit for both
+testers. Do not substitute the private archive, an older rehearsal tag or moving
+`main`. Independent setup, login, typing, approval and export remain untested.
 
 Start with **one Trip bill pair** each and return its result before doing the
 remaining tasks. Allow time for setup and a real conversation; completion speed
@@ -65,10 +65,9 @@ Then follow [installation](JUDGE-QUICKSTART.md#2-install-the-submitted-checkout)
 The block stops at the first failure. If the destination already exists, use a
 new unused folder and adjust the later `cd`; do not overwrite or delete an old
 comparison. Without nvm, install the documented Node22 version before this block.
-Record those version/commit outputs. The designated judge file supplies OP
-access; do not send its contents. Normal installation ignores its obsolete revoked
-npm entry, which remains pending owner cleanup. `judge:install` is designed to
-install locked Cipher versions anonymously without reading that file or npm tokens.
+Record those version/commit outputs. The designated judge file is OP-only; do not
+send its contents. `judge:install` installs locked Cipher versions anonymously
+without reading that file or requiring npm authentication.
 The lite packages and a fresh token-free installation were verified locally on
 3 November; your independent setup/login/coding journey remains to be tested. The
 prior public-judge npm token was revoked on 3 November. The OP client cutoff is

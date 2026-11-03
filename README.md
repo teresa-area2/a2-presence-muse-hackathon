@@ -49,8 +49,9 @@ requires Muse's readable stored auth file; environment-only keys and Keychain-on
 login are not qualified for these isolated panes.
 
 The designated `judge-access/temporary-credentials.json` supplies temporary Open
-Presence access, not Muse access. Its obsolete revoked npm entry is ignored by
-normal installation and remains pending owner cleanup; no new npm token is needed.
+Presence access, not Muse access. The current file is OP-only; normal installation
+does not read it and needs no npm token. The coordinator verified that the user’s
+cleanup at `44be3b1` left the OP fields unchanged; Git history was not purged.
 The installer fetches the public Cipher lite packages anonymously through locked
 npm aliases. A fresh empty-cache installation and the normal judge installer
 passed locally on 3 November; see [qualification status](docs/STATUS.md). After
