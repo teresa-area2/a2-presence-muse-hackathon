@@ -84,8 +84,9 @@ or kill unrelated processes. Opening sessions sends no coding prompt.
 1. Select **Split a trip bill** and one model available to your account. Both arms
    use that same model. Open sessions and select **Both** in the composer.
 2. Type normally, adding your own context, and send:
-   > Read TASK.md and CONTRACT.md. Explain the problem and propose a short plan.
-   > Wait for my response before changing files.
+   > Read TASK.md and CONTRACT.md. Explain what is wrong with the current
+   > implementation and suggest a short plan to fix it. Wait for my response
+   > before changing files.
 3. Read both plans. The example is Alice's €90 apartment for all three and Ben's
    €30 dinner for Ben and Cara: Ben owes Alice €15; Cara owes Alice €45. Reply to
    **Both** with your priorities and permission to implement.
