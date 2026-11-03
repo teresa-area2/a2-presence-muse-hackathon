@@ -7,7 +7,7 @@ evaluation access and is OP-only, without a Muse key or npm token. The coordinat
 verified the user’s cleanup in `44be3b1` left the OP fields unchanged; Git history
 was not purged. Normal installation does not read this file. Keep
 its local copy mode 0600; the user's own Muse login and billing remain separate.
-A normal development checkout omits it. Use [the first-time journey](../docs/JUDGE-QUICKSTART.md)
+The separate private development-history checkout omits it. Use [the first-time journey](../docs/JUDGE-QUICKSTART.md)
 for consent, fallback and setup.
 
 The intended normal `npm run judge:install` uses anonymous locked npm access and
