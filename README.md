@@ -33,6 +33,9 @@ remain external. See [provenance](docs/PROVENANCE.md) and
 
 ## Try the demo
 
+**Peña and Mauro: [start with the Mac tester handoff](docs/MAC-TESTER-HANDOFF.md).**
+It covers setup, your own Muse login, the first test and returning results.
+
 Before enabling textbox Presence, read [Privacy & Data Use](docs/PRIVACY-DATA-USE.md).
 It distinguishes OP metadata, Meta/Muse coding and optional Observer requests,
 consent and saved evidence, with upstream terms still awaiting confirmation.
